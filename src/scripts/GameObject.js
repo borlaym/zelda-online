@@ -12,7 +12,10 @@ class GameObject {
 		this.direction = attributes.direction || UP;
 		this.position = attributes.position || [30, 30];
 		this.currentSprite = this.spriteHandler.sprites[this.direction][0];
-		var now = new Date();
+		this.lastSpriteChange = [0, 0, 0, 0];
+		this.spriteChangeFrequency = 300;
+		this.currentFrame = 0;
+		this.isMoving = false;
 	}
 
 	draw(ctx) {
@@ -28,8 +31,29 @@ class GameObject {
 						this.spriteHandler.HEIGHT);
 	}
 
-	update(dt) {
 
+	setDirection(direction) {
+		if (this.direction === direction) {
+			return;
+		}
+		this.direction = direction;
+		this.currentSprite = this.spriteHandler.sprites[this.direction][this.currentFrame];
+		this.lastSpriteChange[this.direction] = 0;
+	}
+
+	update(dt) {
+		if (this.isMoving) {
+			this.lastSpriteChange[this.direction] += dt;
+		}
+		if (this.lastSpriteChange[this.direction] >= this.spriteChangeFrequency && this.isMoving) {
+			this.swapSpriteFrame();
+		}
+	}
+
+	swapSpriteFrame() {
+		this.currentFrame = 1 - this.currentFrame;
+		this.currentSprite = this.spriteHandler.sprites[this.direction][this.currentFrame];
+		this.lastSpriteChange[this.direction] = 0;
 	}
 };
 

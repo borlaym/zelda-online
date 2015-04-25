@@ -20,18 +20,30 @@ class Player extends GameObject {
 
 		if (keyHandler.isKeyDown(keyHandler.UP_KEY)) {
 			this.position[1] -= this.speed * dt / 1000;
+			this.isMoving = true;
+			this.setDirection(UP);
 		}
 		else if (keyHandler.isKeyDown(keyHandler.DOWN_KEY)) {
 			this.position[1] += this.speed * dt / 1000;
+			this.isMoving = true;
+			this.setDirection(DOWN);
 		} 
 		else if (keyHandler.isKeyDown(keyHandler.RIGHT_KEY)) {
 			this.position[0] += this.speed * dt / 1000;
+			this.isMoving = true;
+			this.setDirection(RIGHT);
 		} 
 		else if (keyHandler.isKeyDown(keyHandler.LEFT_KEY)) {
 			this.position[0] -= this.speed * dt / 1000;
-		} 
+			this.isMoving = true;
+			this.setDirection(LEFT);
+		} else {
+			this.isMoving = false;
+		}
 
 	}
+
+
 };
 
 module.exports = Player;
