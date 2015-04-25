@@ -4,7 +4,7 @@ module.exports = {
 
 	ORIGIN: [-8, -16],
 
-	sprites [
+	sprites: [
 		//UP
 		[
 			[60, 0],

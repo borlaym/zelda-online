@@ -12,13 +12,11 @@ window.addEventListener("keyup", function(a) {
 });
 
 module.exports = {
-	keys: {
-		UP_KEY = 87,
-		LEFT_KEY = 65,
-		RIGHT_KEY = 68,
-		DOWN_KEY = 83
-	},
-	isKeyPressed : function(key) {
+	UP_KEY : 87,
+	LEFT_KEY : 65,
+	RIGHT_KEY : 68,
+	DOWN_KEY : 83,
+	isKeyDown : function(key) {
 		return pressedKeys.indexOf(key) > -1;
 	}
 }
