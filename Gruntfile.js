@@ -94,6 +94,14 @@ module.exports = function (grunt) {
       }
     },
 
+    nodemon: {
+        dev: {
+            script: 'server/server.js',
+            options: {
+                watch: ["server/**/*.js"]
+            }
+        }
+    },
     clean: {
       dist: {
         files: [{
@@ -105,6 +113,7 @@ module.exports = function (grunt) {
       }
     }
   });
+
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {

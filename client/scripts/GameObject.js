@@ -1,21 +1,23 @@
+var GameObject = require("../shared/GameObject");
+
 var UP = 0,
 	RIGHT = 1,
 	DOWN = 2,
 	LEFT = 3;
 
-
-class GameObject {
+/**
+ * Client side implementation of the Game Object, which also handles displaying sprites
+ */
+class GameObjectClientImplementation extends GameObject {
 
 	constructor(attributes) {
 		attributes = attributes || {};
+		super(attributes);
 		this.spriteHandler = attributes.spriteHandler;
-		this.direction = attributes.direction || UP;
-		this.position = attributes.position || [30, 30];
 		this.currentSprite = this.spriteHandler.sprites[this.direction][0];
 		this.lastSpriteChange = [0, 0, 0, 0];
-		this.spriteChangeFrequency = 300;
+		this.spriteChangeFrequency = 200;
 		this.currentFrame = 0;
-		this.isMoving = false;
 	}
 
 	draw(ctx) {
@@ -42,6 +44,7 @@ class GameObject {
 	}
 
 	update(dt) {
+		super.update(dt);
 		if (this.isMoving) {
 			this.lastSpriteChange[this.direction] += dt;
 		}
@@ -59,4 +62,4 @@ class GameObject {
 
 
 
-module.exports = GameObject;
+module.exports = GameObjectClientImplementation;
