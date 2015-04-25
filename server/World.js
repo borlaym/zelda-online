@@ -23,6 +23,7 @@ class World {
 		player.socket.broadcast.emit(Actions.ADD_OBJECT, player.getObject());
 	}
 	removePlayer(socket) {
+		socket.broadcast.emit(Actions.REMOVE_OBJECT, socket.id);
 		delete this.players[socket.id];
 	}
 	tick() {
@@ -30,7 +31,12 @@ class World {
 		var dt = now - this.lastTick;
 		this.lastTick = now;
 		for (var key in this.players) {
-			this.players[key].update(dt);
+			var player = this.players[key];
+			if (now - player.lastHeartbeat > 5000) {
+				this.removePlayer(player.socket);
+			} else {
+				player.update(dt);
+			}
 		}
 	}
 	getState() {

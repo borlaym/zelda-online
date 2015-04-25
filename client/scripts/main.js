@@ -68,3 +68,13 @@ socket.on(Actions.ADD_OBJECT, function(data) {
         id: data.id
     }));
 });
+
+socket.on(Actions.REMOVE_OBJECT, function(id) {
+    gameObjects = _.filter(gameObjects, function(object) {
+        return object.id !== id;
+    });
+});
+
+setInterval(function() {
+    socket.emit(Actions.HEARTBEAT);
+}, 1000);
