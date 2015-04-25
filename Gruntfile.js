@@ -98,7 +98,7 @@ module.exports = function (grunt) {
         dev: {
             script: 'server/server.js',
             options: {
-                watch: ["server/**/*.js"]
+                watch: ["server/**/*.js", "shared/**/*.js"]
             }
         }
     },

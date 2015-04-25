@@ -1,4 +1,4 @@
-var GameObject = require("../shared/GameObject");
+var GameObject = require("../../shared/GameObject");
 
 var UP = 0,
 	RIGHT = 1,
@@ -44,7 +44,6 @@ class GameObjectClientImplementation extends GameObject {
 	}
 
 	update(dt) {
-		super.update(dt);
 		if (this.isMoving) {
 			this.lastSpriteChange[this.direction] += dt;
 		}

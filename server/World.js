@@ -17,6 +17,7 @@ class World {
 			socket: socket,
 			id: socket.id
 		});
+		player.events.on("change", data => this.sendToEveryone(Actions.OBJECT_UPDATE, player.getObject()));
 		this.players[socket.id] = player;
 		player.socket.emit(Actions.INITIAL_STATE, this.getState());
 	}
@@ -37,6 +38,11 @@ class World {
 			state.push(this.players[key].getObject());
 		}
 		return state;
+	}
+	sendToEveryone(action, data) {
+		for (var key in this.players) {
+			this.players[key].socket.emit(action, data);
+		}
 	}
 }
 

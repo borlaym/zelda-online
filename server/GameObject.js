@@ -1,5 +1,6 @@
 var GameObject = require("../shared/GameObject.js");
 var ObjectTypes = require("../shared/ObjectTypes.js");
+var EventEmitter = require("events").EventEmitter;
 
 var UP = 0,
 	RIGHT = 1,
@@ -13,6 +14,7 @@ class GameObjectServerImplementation extends GameObject {
 
 	constructor(attributes) {
 		super(attributes);
+		this.events = new EventEmitter;
 	}
 
 	update(dt) {
@@ -33,6 +35,9 @@ class GameObjectServerImplementation extends GameObject {
 					this.position[0] -= distance;
 					break;
 			}
+
+			this.events.emit("change");
+
 		}
 	}
 
@@ -41,9 +46,11 @@ class GameObjectServerImplementation extends GameObject {
 			id: this.id,
 			position: this.position,
 			direction: this.direction,
-			type: ObjectTypes.PLAYER_LINK
+			type: ObjectTypes.PLAYER_LINK,
+			isMoving: this.isMoving
 		}
 	}
+
 };
 
 
