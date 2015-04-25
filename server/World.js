@@ -20,6 +20,7 @@ class World {
 		player.events.on("change", data => this.sendToEveryone(Actions.OBJECT_UPDATE, player.getObject()));
 		this.players[socket.id] = player;
 		player.socket.emit(Actions.INITIAL_STATE, this.getState());
+		player.socket.broadcast.emit(Actions.ADD_OBJECT, player.getObject());
 	}
 	removePlayer(socket) {
 		delete this.players[socket.id];

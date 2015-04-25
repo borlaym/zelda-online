@@ -23,7 +23,7 @@ function tick() {
     var now = new Date();
     var dt = now - lastTick;
     lastTick = now;
-    
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (var i = 0; i < gameObjects.length; i++) {
@@ -57,4 +57,14 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     object.position = data.position;
     object.isMoving = data.isMoving;
     object.setDirection(data.direction);
+});
+
+socket.on(Actions.ADD_OBJECT, function(data) {
+    console.log("ADD");
+    gameObjects.push(new GameObject({
+        position: data.position,
+        spriteHandler: linkSprites,
+        direction: data.direction,
+        id: data.id
+    }));
 });
