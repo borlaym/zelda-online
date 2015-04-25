@@ -1,0 +1,7 @@
+canvas {
+  margin: 40px auto;
+  border: 1px solid black;
+  transform: scale(3);
+  transform-origin: 0 0;
+  image-rendering: pixelated;
+}

@@ -10,8 +10,9 @@
   "mainInput": "ZeldaOnlineApp",
   "mainOutput": "main",
   "dependencies": {
-    "react": "~0.12.2",
-    "normalize.css": "~3.0.3"
+    "lodash": "^3.7.0",
+    "normalize.css": "~3.0.3",
+    "react": "~0.12.2"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
