@@ -1,4 +1,7 @@
 var GameObject = require("../../shared/GameObject");
+var ObjectTypes = require("../../shared/ObjectTypes.js");
+
+var linkSpriteHandler = require("./spriteHandlers/link.js");
 
 var UP = 0,
 	RIGHT = 1,
@@ -13,11 +16,16 @@ class GameObjectClientImplementation extends GameObject {
 	constructor(attributes) {
 		attributes = attributes || {};
 		super(attributes);
-		this.spriteHandler = attributes.spriteHandler;
-		this.currentSprite = this.spriteHandler.sprites[this.direction][0];
 		this.lastSpriteChange = [0, 0, 0, 0];
 		this.spriteChangeFrequency = 200;
 		this.currentFrame = 0;
+		console.log("TYPE", this.type);
+		switch(this.type) {
+			case ObjectTypes.PLAYER_LINK:
+				this.spriteHandler = linkSpriteHandler;
+				break;
+		}
+		this.currentSprite = this.spriteHandler.sprites[this.direction][0];
 	}
 
 	draw(ctx) {

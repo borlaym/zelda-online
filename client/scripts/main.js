@@ -1,21 +1,27 @@
 'use strict';
 
-var linkSprites = require("./spriteHandlers/link.js");
+var loadAllSprites = require("./spriteHandlers/all.js");
+
 var _ = require("lodash");
 var io = require("socket.io-client");
 var Actions = require("../../shared/Actions.js");
 var GameObject = require("./GameObject.js");
+var WorldObject = require("./WorldObject.js");
 var keyHandler = require("./keyHandler.js");
 
 
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
-linkSprites.load().then(function() {
+
+
+loadAllSprites.then(function() {
+    console.log("Sprites loaded");
     lastTick = new Date().getTime();
     tick();
 });
 
 var gameObjects = [];
+var map = [];
 var lastTick;
 
 
@@ -25,6 +31,15 @@ function tick() {
     lastTick = now;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (var i = 0; i < map.length; i++) {
+        for (var j = 0; j < map[i].length; j++) {
+            if (map[i][j]) {
+                map[i][j].draw(ctx);
+            }
+        }
+    }
+
 
     for (var i = 0; i < gameObjects.length; i++) {
         gameObjects[i].update(dt);
@@ -40,13 +55,24 @@ var socket = io('http://localhost:3000');
 keyHandler.socket = socket;
 
 socket.on(Actions.INITIAL_STATE, function(data) {
-    for (var i = 0; i < data.length; i++) {
+    console.log(data);
+    for (var i = 0; i < data.players.length; i++) {
     	gameObjects.push(new GameObject({
-    		position: data[i].position,
-    		spriteHandler: linkSprites,
-    		direction: data[i].direction,
-    		id: data[i].id
+    		position: data.players[i].position,
+    		type: data.players[i].type,
+    		direction: data.players[i].direction,
+    		id: data.players[i].id
     	}));
+    }
+    for (var i = 0; i < data.map.length; i++) {
+        map.push([]);
+        for (var j = 0; j < data.map[i].length; j++) {
+            if (data.map[i][j]) {
+                map[i].push(new WorldObject(data.map[i][j]));
+            } else {
+                map[i].push(false);
+            }
+        }
     }
 });
 
@@ -62,8 +88,8 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
 socket.on(Actions.ADD_OBJECT, function(data) {
     console.log("ADD");
     gameObjects.push(new GameObject({
+        type: data.type,
         position: data.position,
-        spriteHandler: linkSprites,
         direction: data.direction,
         id: data.id
     }));

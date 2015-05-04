@@ -1,6 +1,7 @@
 var GameObject = require("./GameObject.js");
 var Actions = require("../shared/Actions.js");
 var Player = require("./Player.js");
+var Map = require("../shared/Map.js");
 
 class World {
 	constructor() {
@@ -8,9 +9,13 @@ class World {
 		this.ai = {};
 		var self = this;
 		self.lastTick = new Date().getTime();
+		this.generateMap();
 		setInterval(function() {
 			self.tick();
 		}, 1000/60);
+	}
+	generateMap() {
+		this.map = new Map();
 	}
 	addPlayer(socket) {
 		var player = new Player({
@@ -40,10 +45,14 @@ class World {
 		}
 	}
 	getState() {
-		var state = [];
+		var state = {
+			players: [],
+			map: {}
+		};
 		for (var key in this.players) {
-			state.push(this.players[key].getObject());
+			state.players.push(this.players[key].getObject());
 		}
+		state.map = this.map.getState();
 		return state;
 	}
 	sendToEveryone(action, data) {
