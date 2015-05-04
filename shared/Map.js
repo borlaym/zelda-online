@@ -7,7 +7,11 @@ class Map {
 		for (var x = 0; x < 16; x++) {
 			this.objects.push([]);
 			for (var y = 0; y < 11; y++) {
-				this.objects[x].push(false);
+				this.objects[x].push(new WorldObject({
+					type: ObjectTypes.FLOOR_DIRT,
+					coordinates: [x, y],
+					passable: true
+				}));
 			}
 		}
 		this.generateRandom();

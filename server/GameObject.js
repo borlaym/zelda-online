@@ -48,7 +48,7 @@ class GameObjectServerImplementation extends GameObject {
 				targetGrid[0] >= 0 &&
 		 		targetGrid[1] < map[0].length && 
 		 		targetGrid[1] >= 0 && 
-				!map[targetGrid[0]][targetGrid[1]]
+				map[targetGrid[0]][targetGrid[1]].passable
 
 					) {
 							this.position = newPosition;

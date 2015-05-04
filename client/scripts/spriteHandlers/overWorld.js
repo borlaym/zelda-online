@@ -7,7 +7,8 @@ module.exports = {
 	ORIGIN: [0, 0],
 
 	sprites: {
-		[ObjectTypes.TREE]: [120, 18]
+		[ObjectTypes.TREE]: [120, 18],
+		[ObjectTypes.FLOOR_DIRT]: [35, 1]
 	},
 
 	load: function() {
