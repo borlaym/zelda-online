@@ -10,7 +10,6 @@ class Player extends GameObject {
 		this.socket = attributes.socket;
 		this.socket.on(Actions.START_MOVING, this.startMoving.bind(this));
 		this.socket.on(Actions.STOP_MOVING, this.stopMoving.bind(this));
-
 		this.lastHeartbeat = new Date().getTime();
 		this.socket.on(Actions.HEARTBEAT, this.heartbeat.bind(this));
 	}

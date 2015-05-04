@@ -20,7 +20,8 @@ class World {
 	addPlayer(socket) {
 		var player = new Player({
 			socket: socket,
-			id: socket.id
+			id: socket.id,
+			world: this
 		});
 		player.events.on("change", data => this.sendToEveryone(Actions.OBJECT_UPDATE, player.getObject()));
 		this.players[socket.id] = player;

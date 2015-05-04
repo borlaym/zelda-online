@@ -3,7 +3,7 @@ class WorldObject {
 		attributes = attributes || {};
 		this.id = attributes.id;
 		this.type = attributes.type;
-		this.coordinates = attributes.coordinates || [Math.floor(Math.random() * 20), Math.floor(Math.random() * 20)];
+		this.coordinates = attributes.coordinates;
 		this.passable = attributes.passable || false;
 	}
 	getPosition() {

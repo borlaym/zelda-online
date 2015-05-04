@@ -13,7 +13,7 @@ class GameObject {
 		this.id = attributes.id;
 		this.type = attributes.type;
 		this.direction = attributes.direction || UP;
-		this.position = attributes.position || [Math.floor(Math.random() * 200), Math.floor(Math.random() * 200)];
+		this.position = attributes.position || [32, 32];
 		this.isMoving = false;
 		this.speed = 50;
 	}
