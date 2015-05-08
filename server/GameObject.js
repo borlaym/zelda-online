@@ -89,10 +89,12 @@ class GameObjectServerImplementation extends GameObject {
 
 			if (this.direction === RIGHT) {
 				checkPosition[0] += 8;
+				checkPosition[1] -= 8;
 			}
 
 			if (this.direction === LEFT) {
 				checkPosition[0] -= 8;
+				checkPosition[1] -= 8;
 			}
 
 			//Check if there is an object on the grid we are about to go to
@@ -119,6 +121,9 @@ class GameObjectServerImplementation extends GameObject {
 
 
 			//Check collision with other players
+			if (this.direction === UP) {
+				checkPosition[1] = checkPosition[1] - 8;
+			}
 			for (var key in this.world.players) {
 				var otherPlayer = this.world.players[key];
 				if (otherPlayer.id !== this.id) {

@@ -30,6 +30,10 @@ class GameObjectClientImplementation extends GameObject {
 
 	draw(ctx) {
 		var drawPosition = [this.position[0] + this.spriteHandler.ORIGIN[0], this.position[1] + this.spriteHandler.ORIGIN[1]];
+		ctx.save();
+		ctx.globalAlpha = 0.3;
+		ctx.fillRect(this.position[0] - 8, this.position[1] - 16, 16, 16);
+		ctx.restore();
 		ctx.drawImage(this.spriteHandler.image, 
 						this.currentSprite[0], 
 						this.currentSprite[1], 
