@@ -121,14 +121,27 @@ class GameObjectServerImplementation extends GameObject {
 
 
 			//Check collision with other players
+			//We actually check both points on the directional edge, not just its center
+			var checkPoint1, checkPoint2;			
 			if (this.direction === UP) {
-				checkPosition[1] = checkPosition[1] - 8;
+				checkPoint1 = [checkPosition[0] - 8, checkPosition[1] - 8];
+				checkPoint2 = [checkPosition[0] + 8, checkPosition[1] - 8];
 			}
+			if (this.direction === LEFT || this.direction === RIGHT) {
+				checkPoint1 = [checkPosition[0], checkPosition[1] - 8];
+				checkPoint2 = [checkPosition[0], checkPosition[1] + 8];
+			}
+			if (this.direction === DOWN) {
+				checkPoint1 = [checkPosition[0] - 8, checkPosition[1]];
+				checkPoint2 = [checkPosition[0] + 8, checkPosition[1]];
+			}
+
+
 			for (var key in this.world.players) {
 				var otherPlayer = this.world.players[key];
 				if (otherPlayer.id !== this.id) {
 					var otherPlayerPosition = [otherPlayer.position[0] - 8, otherPlayer.position[1] - 16];
-					if (pointIsInRectangle(otherPlayerPosition, checkPosition)) {
+					if (pointIsInRectangle(otherPlayerPosition, checkPoint1) || pointIsInRectangle(otherPlayerPosition, checkPoint2)) {
 						collision = true;
 					}
 				}
