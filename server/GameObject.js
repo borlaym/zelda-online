@@ -8,6 +8,41 @@ var UP = 0,
 	LEFT = 3;
 
 /**
+ * Helper function to check if two rectangles overlap
+ * @param  {Array} rect1  Top left corner of rectangle 1, array of two coordinates
+ * @param  {Array} rect2  Top left corner of rectangle 2, array of two coordinates
+ * @return {Boolean} 
+ */
+function rectanglesOverlap (rect1TopLeft, rect2TopLeft) {
+	var rect1BottomRight = [rect1TopLeft[0] + 16, rect1TopLeft[0] + 16];
+	var rect2BottomRight = [rect2TopLeft[0] + 16, rect2TopLeft[0] + 16];
+
+	if (rect1BottomRight[0] < rect2TopLeft[0] || rect2BottomRight[0] < rect1TopLeft[0]) {
+		return false;
+	}
+
+	if (rect1BottomRight[1] < rect2TopLeft[1] || rect2BottomRight[1] < rect1TopLeft[1]) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Check if given point is within the boundaries of a rectangle
+ * @param  {Array} rectangle [description]
+ * @param  {Array} point     [description]
+ * @return {Boolean}           [description]
+ */
+function pointIsInRectangle(rectangle, point) {
+	if (point[0] >= rectangle[0] && point[0] <= rectangle[0] + 16 
+		&& point[1] >= rectangle[1] && point[1] <= rectangle[1] + 16) {
+		return true;
+	}
+	return false;
+}
+
+/**
  * Server side implementation of the GameObject, which handles actions
  */
 class GameObjectServerImplementation extends GameObject {
@@ -42,18 +77,63 @@ class GameObjectServerImplementation extends GameObject {
 			}
 
 			//Check if we would collide with a World Object
+			var collision = false;
 			var map = this.world.map.objects;
-			var targetGrid = [Math.floor(newPosition[0] / 16), Math.floor(newPosition[1] / 16)];
-			if (targetGrid[0] < map.length &&
-				targetGrid[0] >= 0 &&
-		 		targetGrid[1] < map[0].length && 
-		 		targetGrid[1] >= 0 && 
-				map[targetGrid[0]][targetGrid[1]].passable
 
-					) {
-							this.position = newPosition;
-							this.events.emit("change");
+			var checkPosition = [newPosition[0], newPosition[1]];
+
+			//Modify the point we check against based where we are facing
+			if (this.direction === UP) {
+				checkPosition[1] -= 8;
 			}
+
+			if (this.direction === RIGHT) {
+				checkPosition[0] += 8;
+			}
+
+			if (this.direction === LEFT) {
+				checkPosition[0] -= 8;
+			}
+
+			//Check if there is an object on the grid we are about to go to
+			var targetGrid = [Math.floor(checkPosition[0] / 16), Math.floor(checkPosition[1] / 16)];
+
+			if (targetGrid[0] >= map.length) {
+				collision = true;
+			}
+			if (targetGrid[0] <= 0) {
+				collision = true;
+			}
+			if (targetGrid[1] >= map[0].length) {
+				collision = true;
+			}
+		 	if (targetGrid[1] <= 0) {
+		 		collision = true;
+		 	}
+
+		 	if (!map[targetGrid[0]] || !map[targetGrid[0]][targetGrid[1]]) {
+		 		collision = true;
+		 	} else if (!map[targetGrid[0]][targetGrid[1]].passable) {
+				collision = true;
+			}
+
+
+			//Check collision with other players
+			for (var key in this.world.players) {
+				var otherPlayer = this.world.players[key];
+				if (otherPlayer.id !== this.id) {
+					if (pointIsInRectangle(checkPosition, otherPlayer.position)) {
+						collision = true;
+					}
+				}
+			}
+
+			//If there was no collision with anything, we apply the new position to the player and emit a change event
+			if (!collision) {
+				this.position = newPosition;
+				this.events.emit("change");
+			}
+
 
 
 
