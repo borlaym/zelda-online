@@ -5,6 +5,7 @@ var keys = {
 	LEFT : 65,
 	RIGHT : 68,
 	DOWN : 83,
+	A: 79
 }
 var pressedKeys = [];
 
@@ -13,19 +14,21 @@ var Object = {
 		var direction;
 		switch(key) {
 			case keys.UP:
-				direction = 0;
+				this.socket.emit(Actions.START_MOVING, 0);
 				break;
 			case keys.RIGHT:
-				direction = 1;
+				this.socket.emit(Actions.START_MOVING, 1);
 				break;
 			case keys.DOWN:
-				direction = 2;
+				this.socket.emit(Actions.START_MOVING, 2);
 				break;
 			case keys.LEFT:
-				direction = 3;
+				this.socket.emit(Actions.START_MOVING, 3);
+				break;
+			case keys.A:
+				this.socket.emit(Actions.ATTACK, 3);
 				break;
 		}
-		this.socket.emit(Actions.START_MOVING, direction);
 	},
 	handleKeyUp: function(key) {
 		if (pressedKeys.length === 0) {

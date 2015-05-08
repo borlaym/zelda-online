@@ -7,5 +7,6 @@ module.exports = keymirror({
 	"OBJECT_UPDATE": null,
 	"ADD_OBJECT": null,
 	"REMOVE_OBJECT": null,
-	"HEARTBEAT": null
+	"HEARTBEAT": null,
+	"ATTACK": null
 });

@@ -82,11 +82,11 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     });
     object.position = data.position;
     object.isMoving = data.isMoving;
+    object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);
 });
 
 socket.on(Actions.ADD_OBJECT, function(data) {
-    console.log("ADD");
     gameObjects.push(new GameObject({
         type: data.type,
         position: data.position,

@@ -55,6 +55,15 @@ class GameObjectClientImplementation extends GameObject {
 		this.lastSpriteChange[this.direction] = 0;
 	}
 
+	setAttacking(isAttacking) {
+		if (this.isAttacking !== isAttacking) {
+			this.isAttacking = isAttacking;
+			if (!this.isAttacking) {
+				this.swapSpriteFrame();
+			}
+		}
+	}
+
 	update(dt) {
 		if (this.isMoving) {
 			this.lastSpriteChange[this.direction] += dt;
@@ -62,12 +71,19 @@ class GameObjectClientImplementation extends GameObject {
 		if (this.lastSpriteChange[this.direction] >= this.spriteChangeFrequency && this.isMoving) {
 			this.swapSpriteFrame();
 		}
+		if (this.isAttacking) {
+			this.showAttackingSprite();
+		}
 	}
 
 	swapSpriteFrame() {
 		this.currentFrame = 1 - this.currentFrame;
 		this.currentSprite = this.spriteHandler.sprites[this.direction][this.currentFrame];
 		this.lastSpriteChange[this.direction] = 0;
+	}
+
+	showAttackingSprite() {
+		this.currentSprite = this.spriteHandler.sprites[this.direction][2];
 	}
 };
 
