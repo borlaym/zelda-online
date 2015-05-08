@@ -101,13 +101,13 @@ class GameObjectServerImplementation extends GameObject {
 			if (targetGrid[0] >= map.length) {
 				collision = true;
 			}
-			if (targetGrid[0] <= 0) {
+			if (targetGrid[0] < 0) {
 				collision = true;
 			}
 			if (targetGrid[1] >= map[0].length) {
 				collision = true;
 			}
-		 	if (targetGrid[1] <= 0) {
+		 	if (targetGrid[1] < 0) {
 		 		collision = true;
 		 	}
 
@@ -122,7 +122,8 @@ class GameObjectServerImplementation extends GameObject {
 			for (var key in this.world.players) {
 				var otherPlayer = this.world.players[key];
 				if (otherPlayer.id !== this.id) {
-					if (pointIsInRectangle(checkPosition, otherPlayer.position)) {
+					var otherPlayerPosition = [otherPlayer.position[0] - 8, otherPlayer.position[1] - 16];
+					if (pointIsInRectangle(otherPlayerPosition, checkPosition)) {
 						collision = true;
 					}
 				}
