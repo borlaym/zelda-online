@@ -21,6 +21,13 @@ class GameObject {
 	setDirection(direction) {
 		this.direction = direction;
 	}
+
+	/**
+	 * Get the top left point of the sprite
+	 */
+	getWorldPosition() {
+		return [this.position[0] - 8, this.position[1] - 16];
+	}
 };
 
 

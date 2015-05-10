@@ -154,11 +154,31 @@ class GameObjectServerImplementation extends GameObject {
 			}
 
 
+		}
 
+		if (!this.isInvincible) {
+
+			var myPosition = this.getWorldPosition();
+			var self = this;
+			//Check for collision with projectiles
+			for (var key in this.world.players) {
+				if (key === this.id) {
+					continue;
+				}
+				var otherPlayer = this.world.players[key];
+				otherPlayer.projectiles.forEach(function(projectile) {
+					if (rectanglesOverlap(projectile.getWorldPosition(), myPosition)) {
+						self.getHit(projectile);
+					}
+				});
+			}
 
 		}
-	}
 
+	}
+	/**
+	 * Creates an object representation that can be sent back via sockets
+	 */
 	getObject() {
 		return {
 			id: this.id,
@@ -168,6 +188,19 @@ class GameObjectServerImplementation extends GameObject {
 			isMoving: this.isMoving,
 			isAttacking: this.isAttacking
 		}
+	}
+	/**
+	 * Called when you get hit by a projectile
+	 * @return {[type]} [description]
+	 */
+	getHit(projectile) {
+		var self = this;
+		this.isInvincible = true;
+		setTimeout(function() {
+			self.isInvincible = false;
+		}, 500);
+		var direction = projectile.direction;
+		this.events.emit("gotHit", projectile);
 	}
 
 };

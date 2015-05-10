@@ -101,6 +101,10 @@ socket.on(Actions.REMOVE_OBJECT, function(id) {
     });
 });
 
+socket.on(Actions.HIT, function(player) {
+    console.log(player);
+});
+
 setInterval(function() {
     socket.emit(Actions.HEARTBEAT);
 }, 1000);
