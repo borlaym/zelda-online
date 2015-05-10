@@ -50,8 +50,8 @@ function tick() {
 
 }
 
-
-var socket = io('http://zelda.kriek.io');
+var server = window.location.href.indexOf("localhost") > -1 ? "http://localhost:5000" : 'http://zelda.kriek.io';
+var socket = io(server);
 keyHandler.socket = socket;
 
 socket.on(Actions.INITIAL_STATE, function(data) {
