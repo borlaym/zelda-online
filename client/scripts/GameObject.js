@@ -2,6 +2,7 @@ var GameObject = require("../../shared/GameObject");
 var ObjectTypes = require("../../shared/ObjectTypes.js");
 
 var linkSpriteHandler = require("./spriteHandlers/link.js");
+var projectileHandler = require("./spriteHandlers/projectiles.js");
 
 var UP = 0,
 	RIGHT = 1,
@@ -24,8 +25,15 @@ class GameObjectClientImplementation extends GameObject {
 			case ObjectTypes.PLAYER_LINK:
 				this.spriteHandler = linkSpriteHandler;
 				break;
+			case ObjectTypes.SWORD:
+				this.spriteHandler = projectileHandler;
+				break;
 		}
-		this.currentSprite = this.spriteHandler.sprites[this.direction][0];
+		if (this.type === ObjectTypes.PLAYER_LINK) {
+			this.currentSprite = this.spriteHandler.sprites[this.direction][0];
+		} else {
+			this.currentSprite = this.spriteHandler.sprites[this.type][this.direction][0];
+		}
 	}
 
 	draw(ctx) {

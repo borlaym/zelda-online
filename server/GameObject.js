@@ -164,7 +164,7 @@ class GameObjectServerImplementation extends GameObject {
 			id: this.id,
 			position: this.position,
 			direction: this.direction,
-			type: ObjectTypes.PLAYER_LINK,
+			type: this.type,
 			isMoving: this.isMoving,
 			isAttacking: this.isAttacking
 		}

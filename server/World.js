@@ -2,6 +2,7 @@ var GameObject = require("./GameObject.js");
 var Actions = require("../shared/Actions.js");
 var Player = require("./Player.js");
 var Map = require("../shared/Map.js");
+var ObjectTypes = require("../shared/ObjectTypes.js");
 
 class World {
 	constructor() {
@@ -21,9 +22,12 @@ class World {
 		var player = new Player({
 			socket: socket,
 			id: socket.id,
-			world: this
+			world: this,
+			type: ObjectTypes.PLAYER_LINK
 		});
 		player.events.on("change", data => this.sendToEveryone(Actions.OBJECT_UPDATE, player.getObject()));
+		player.events.on("projectileSpawned", projectile => this.sendToEveryone(Actions.ADD_OBJECT, projectile.getObject()));
+		player.events.on("projectileRemoved", projectile => this.sendToEveryone(Actions.REMOVE_OBJECT, projectile.id));
 		this.players[socket.id] = player;
 		player.socket.emit(Actions.INITIAL_STATE, this.getState());
 		player.socket.broadcast.emit(Actions.ADD_OBJECT, player.getObject());
