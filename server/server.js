@@ -1,7 +1,9 @@
 require("babel/register");
 var app = require('express')();
+var cors = require("cors");
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+app.use(cors());
 io.set("origins", "*:*");
 var World = require("./World.js");
 
@@ -18,5 +20,5 @@ io.on('connection', function(socket){
 	
 });
 
-http.listen(3000, function(){
+http.listen(5000, function(){
 });

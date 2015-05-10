@@ -51,7 +51,7 @@ function tick() {
 }
 
 
-var socket = io('http://localhost:3000');
+var socket = io('http://zelda.kriek.io');
 keyHandler.socket = socket;
 
 socket.on(Actions.INITIAL_STATE, function(data) {
