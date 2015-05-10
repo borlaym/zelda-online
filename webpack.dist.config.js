@@ -18,7 +18,7 @@ module.exports = {
 
   debug: false,
   devtool: false,
-  entry: './src/components/ZeldaOnlineApp.js',
+  entry: './client/scripts/main.js',
 
   stats: {
     colors: true,
