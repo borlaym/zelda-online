@@ -53,6 +53,25 @@ class GameObjectClientImplementation extends GameObject {
 						drawPosition[1], 
 						this.spriteHandler.WIDTH, 
 						this.spriteHandler.HEIGHT);
+
+		//Show name if it's a player
+		if (this.type === ObjectTypes.PLAYER_LINK && this.name) {
+
+			var namePlate = document.getElementById(this.id);
+
+			if (!namePlate) {
+				namePlate = document.createElement("div");
+				namePlate.id = this.id;
+				namePlate.className = "namePlate";
+				namePlate.innerHTML = this.name;
+				document.getElementById("container").appendChild(namePlate);
+			}
+
+			namePlate.style.left = (this.position[0]) + "px";
+			namePlate.style.top = (this.position[1] - 24) + "px";
+
+			
+		}
 	}
 
 

@@ -57,16 +57,16 @@ class GameObjectServerImplementation extends GameObject {
 		//Check if the character is moving anywhere
 
 		//If the player is moving but not attacking and not getting knocked back
-		if (this.isMoving && !this.isAttacking && !this.isMovingInvolunteraly) {
+		if (this.isMoving && !this.isAttacking && !this.isMovingInvoluntarily) {
 			this.move(dt);
 		}
 		//Otherwise if the player is getting knocked back
-		if (this.isMovingInvolunteraly) {
-			this.moveInvolunteraly(dt);
+		if (this.isMovingInvoluntarily) {
+			this.moveInvoluntarily(dt);
 		}
 
 		//Check if the character is in contact with any projectile
-		if (!this.isInvincible) {
+		if (!this.isInvincible && this.type === ObjectTypes.PLAYER_LINK) {
 
 			var myPosition = this.getWorldPosition();
 			var self = this;
@@ -126,7 +126,7 @@ class GameObjectServerImplementation extends GameObject {
 		}
 	}
 
-	moveInvolunteraly(dt) {
+	moveInvoluntarily(dt) {
 		var newPosition = [this.position[0], this.position[1]];
 		var distance = this.knockback.speed * dt / 1000;
 		switch(this.knockback.direction) {
@@ -255,7 +255,8 @@ class GameObjectServerImplementation extends GameObject {
 			type: this.type,
 			isMoving: this.isMoving,
 			isAttacking: this.isAttacking,
-			isInvincible: this.isInvincible
+			isInvincible: this.isInvincible,
+			name: this.name
 		}
 	}
 	/**
@@ -270,17 +271,31 @@ class GameObjectServerImplementation extends GameObject {
 			self.isInvincible = false;
 			self.events.emit("change");
 		}, 500);
-		//Get knocked back
-		this.isMovingInvolunteraly = true;
-		this.knockback = {
+		
+		this.getKnockedBack({
 			speed: 150,
-			direction: projectile.direction
-		};
-		setTimeout(function() {
-			self.isMovingInvolunteraly = false;
-		}, 300);
+			direction: projectile.direction,
+			duration: 300
+		});
 
 		this.events.emit("change");
+	}
+
+	/**
+	 * Get knocked back, unable to move voluntarily
+	 */
+	getKnockedBack(settings) {
+		var self = this;
+		//Get knocked back
+		this.isMovingInvoluntarily = true;
+		this.knockback = {
+			speed: settings.speed,
+			direction: settings.direction
+		};
+		setTimeout(function() {
+			self.isMovingInvoluntarily = false;
+		}, settings.duration);
+
 	}
 
 };

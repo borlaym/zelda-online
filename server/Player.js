@@ -16,6 +16,11 @@ class Player extends GameObject {
 	constructor(attributes) {
 		super(attributes);
 		this.socket = attributes.socket;
+		var self = this;
+		this.socket.on(Actions.JOIN, function(data) {
+			console.log(data);
+			self.name = data.name;
+		});
 		this.socket.on(Actions.START_MOVING, this.startMoving.bind(this));
 		this.socket.on(Actions.STOP_MOVING, this.stopMoving.bind(this));
 		this.socket.on(Actions.ATTACK, this.attack.bind(this));
@@ -33,7 +38,7 @@ class Player extends GameObject {
 	}
 	heartbeat() {
 		this.lastHeartbeat = new Date().getTime();
-	}
+	}űűű
 	attack() {
 		if (this.projectiles.length !== 0) {
 			return;
@@ -76,10 +81,12 @@ class Player extends GameObject {
 			direction: this.direction,
 			position: swordPosition,
 			isMoving: false,
+			isAttached: true,
 			speed: 0,
 			duration: 200,
 			owner: this,
-			id: this.id + "sword"
+			id: this.id + "sword",
+			world: this.world
 		});
 
 		this.projectiles.push(sword);
@@ -93,6 +100,26 @@ class Player extends GameObject {
 			return item !== swordInstance;
 		});
 		this.events.emit("projectileRemoved", swordInstance);
+	}
+
+	getHit(projectile) {
+		//Check if we are facing the direction of the projectile
+		//If we do, we block the attack!
+		if (
+			(this.direction === UP && projectile.direction === DOWN) ||
+			(this.direction === DOWN && projectile.direction === UP) ||
+			(this.direction === LEFT && projectile.direction === RIGHT) ||
+			(this.direction === RIGHT && projectile.direction === LEFT)
+		) {
+			//The attacking player gets knocked back
+			projectile.owner.getKnockedBack({
+				speed: 150,
+				duration: 100,
+				direction: this.direction
+			})
+			return;
+		}
+		super.getHit(projectile);
 	}
 }
 

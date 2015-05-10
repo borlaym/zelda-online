@@ -50,9 +50,16 @@ function tick() {
 
 }
 
+var name = localStorage.getItem("name") || window.prompt("Name: ");
+localStorage.setItem("name", name);
 
-var socket = io('http://zelda.kriek.io');
+var server = window.location.href.indexOf("localhost") > -1 ? "http://localhost:5000" : 'http://zelda.kriek.io';
+var socket = io(server);
 keyHandler.socket = socket;
+
+socket.emit(Actions.JOIN, {
+    name: name
+});
 
 socket.on(Actions.INITIAL_STATE, function(data) {
     console.log(data);
@@ -82,6 +89,7 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     });
     object.position = data.position;
     object.isMoving = data.isMoving;
+    object.name = data.name;
     object.isInvincible = data.isInvincible;
     object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);
@@ -100,6 +108,7 @@ socket.on(Actions.REMOVE_OBJECT, function(id) {
     gameObjects = _.filter(gameObjects, function(object) {
         return object.id !== id;
     });
+    document.getElementById("container").removeChild(document.getElementById(id));
 });
 
 setInterval(function() {
