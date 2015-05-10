@@ -96,7 +96,6 @@ socket.on(Actions.ADD_OBJECT, function(data) {
 });
 
 socket.on(Actions.REMOVE_OBJECT, function(id) {
-    console.log(id);
     gameObjects = _.filter(gameObjects, function(object) {
         return object.id !== id;
     });

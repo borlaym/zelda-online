@@ -54,7 +54,7 @@ class GameObjectServerImplementation extends GameObject {
 	}
 
 	update(dt) {
-		if (this.isMoving) {
+		if (this.isMoving && !this.isAttacking) {
 			var distance = this.speed * dt / 1000;
 
 			//First we only save the position that would become the object's position if everything was all right (ie no collisions)

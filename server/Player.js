@@ -35,6 +35,9 @@ class Player extends GameObject {
 		this.lastHeartbeat = new Date().getTime();
 	}
 	attack() {
+		if (this.projectiles.length !== 0) {
+			return;
+		}
 		this.isAttacking = true;
 		this.events.emit("change");
 
@@ -79,7 +82,7 @@ class Player extends GameObject {
 			id: this.id + "sword"
 		});
 
-		this.projectiles.push();
+		this.projectiles.push(sword);
 
 		this.events.emit("projectileSpawned", sword);
 
