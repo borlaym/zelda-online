@@ -54,106 +54,12 @@ class GameObjectServerImplementation extends GameObject {
 	}
 
 	update(dt) {
-		if (this.isMoving && !this.isAttacking) {
-			var distance = this.speed * dt / 1000;
+		if (this.isMoving && !this.isAttacking && !this.isMovingInvolunteraly) {
+			this.moving(dt);
+		}
 
-			//First we only save the position that would become the object's position if everything was all right (ie no collisions)
-			var newPosition = [this.position[0], this.position[1]];
-
-			switch(this.direction) {
-				
-				case UP:
-					newPosition[1] -= distance;
-					break;
-				case RIGHT:
-					newPosition[0] += distance;
-					break;
-				case DOWN:
-					newPosition[1] += distance;
-					break;
-				case LEFT:
-					newPosition[0] -= distance;
-					break;
-			}
-
-			//Check if we would collide with a World Object
-			var collision = false;
-			var map = this.world.map.objects;
-
-			var checkPosition = [newPosition[0], newPosition[1]];
-
-			//Modify the point we check against based where we are facing
-			if (this.direction === UP) {
-				checkPosition[1] -= 8;
-			}
-
-			if (this.direction === RIGHT) {
-				checkPosition[0] += 8;
-				checkPosition[1] -= 8;
-			}
-
-			if (this.direction === LEFT) {
-				checkPosition[0] -= 8;
-				checkPosition[1] -= 8;
-			}
-
-			//Check if there is an object on the grid we are about to go to
-			var targetGrid = [Math.floor(checkPosition[0] / 16), Math.floor(checkPosition[1] / 16)];
-
-			if (targetGrid[0] >= map.length) {
-				collision = true;
-			}
-			if (targetGrid[0] < 0) {
-				collision = true;
-			}
-			if (targetGrid[1] >= map[0].length) {
-				collision = true;
-			}
-		 	if (targetGrid[1] < 0) {
-		 		collision = true;
-		 	}
-
-		 	if (!map[targetGrid[0]] || !map[targetGrid[0]][targetGrid[1]]) {
-		 		collision = true;
-		 	} else if (!map[targetGrid[0]][targetGrid[1]].passable) {
-				collision = true;
-			}
-
-
-			//Check collision with other players
-			//We actually check both points on the directional edge, not just its center
-			var checkPoint1, checkPoint2;			
-			if (this.direction === UP) {
-				checkPoint1 = [checkPosition[0] - 8, checkPosition[1] - 8];
-				checkPoint2 = [checkPosition[0] + 8, checkPosition[1] - 8];
-			}
-			if (this.direction === LEFT || this.direction === RIGHT) {
-				checkPoint1 = [checkPosition[0], checkPosition[1] - 8];
-				checkPoint2 = [checkPosition[0], checkPosition[1] + 8];
-			}
-			if (this.direction === DOWN) {
-				checkPoint1 = [checkPosition[0] - 8, checkPosition[1]];
-				checkPoint2 = [checkPosition[0] + 8, checkPosition[1]];
-			}
-
-
-			for (var key in this.world.players) {
-				var otherPlayer = this.world.players[key];
-				if (otherPlayer.id !== this.id) {
-					var otherPlayerPosition = [otherPlayer.position[0] - 8, otherPlayer.position[1] - 16];
-					if (pointIsInRectangle(otherPlayerPosition, checkPoint1) || pointIsInRectangle(otherPlayerPosition, checkPoint2)) {
-						collision = true;
-					}
-				}
-			}
-
-			//If there was no collision with anything, we apply the new position to the player and emit a change event
-			if (!collision) {
-				this.position = newPosition;
-				this.events.emit("change");
-			}
-
-
+		if (this.isMovingInvolunteraly) {
+			this.movingInvolunteraly(dt);
 		}
 
 		if (!this.isInvincible) {
@@ -176,6 +82,164 @@ class GameObjectServerImplementation extends GameObject {
 		}
 
 	}
+
+	moving(dt) {
+		var distance = this.speed * dt / 1000;
+
+		//First we only save the position that would become the object's position if everything was all right (ie no collisions)
+		var newPosition = [this.position[0], this.position[1]];
+
+		switch(this.direction) {
+			
+			case UP:
+				newPosition[1] -= distance;
+				break;
+			case RIGHT:
+				newPosition[0] += distance;
+				break;
+			case DOWN:
+				newPosition[1] += distance;
+				break;
+			case LEFT:
+				newPosition[0] -= distance;
+				break;
+		}
+
+		//Check if we would collide with a World Object
+		var collision = this.checkCollisionWithWorldObjects(newPosition);
+
+		//Check collision with other players
+		if (!collision) {
+			collision = this.checkCollisionWithOtherPlayers(newPosition);
+		}
+
+		
+
+		//If there was no collision with anything, we apply the new position to the player and emit a change event
+		if (!collision) {
+			this.position = newPosition;
+			this.events.emit("change");
+		}
+	}
+
+	movingInvolunteraly(dt) {
+		var newPosition = [this.position[0], this.position[1]];
+		var distance = this.knockback.speed * dt / 1000;
+		switch(this.knockback.direction) {
+			
+			case UP:
+				newPosition[1] -= distance;
+				break;
+			case RIGHT:
+				newPosition[0] += distance;
+				break;
+			case DOWN:
+				newPosition[1] += distance;
+				break;
+			case LEFT:
+				newPosition[0] -= distance;
+				break;
+		}
+
+
+		//Check if we would collide with a World Object
+		var collision = this.checkCollisionWithWorldObjects(newPosition);
+
+		//Check collision with other players
+		if (!collision) {
+			collision = this.checkCollisionWithOtherPlayers(newPosition);
+		}
+
+		//If there was no collision with anything, we apply the new position to the player and emit a change event
+		if (!collision) {
+			this.position = newPosition;
+			this.events.emit("change");
+		}
+	}
+
+	checkCollisionWithOtherPlayers(newPosition) {
+		var collision = false;
+		//We actually check both points on the directional edge, not just its center
+		var checkPoint1, checkPoint2;			
+		if (this.direction === UP) {
+			checkPoint1 = [newPosition[0] - 8, newPosition[1] - 16];
+			checkPoint2 = [newPosition[0] + 8, newPosition[1] - 16];
+		}
+		if (this.direction === LEFT) {
+			checkPoint1 = [newPosition[0] - 8, newPosition[1]];
+			checkPoint2 = [newPosition[0] - 8, newPosition[1] - 16];
+		}
+
+		if (this.direction === RIGHT) {
+			checkPoint1 = [newPosition[0] + 8, newPosition[1]];
+			checkPoint2 = [newPosition[0] + 8, newPosition[1] - 16];
+		}
+
+		if (this.direction === DOWN) {
+			checkPoint1 = [newPosition[0] - 8, newPosition[1]];
+			checkPoint2 = [newPosition[0] + 8, newPosition[1]];
+		}
+
+
+		for (var key in this.world.players) {
+			var otherPlayer = this.world.players[key];
+			if (otherPlayer.id !== this.id) {
+				var otherPlayerPosition = [otherPlayer.position[0] - 8, otherPlayer.position[1] - 16];
+				if (pointIsInRectangle(otherPlayerPosition, checkPoint1) || pointIsInRectangle(otherPlayerPosition, checkPoint2)) {
+					collision = true;
+				}
+			}
+		}
+
+		return collision;
+	}
+
+	checkCollisionWithWorldObjects(newPosition) {
+		var collision = false;
+		var map = this.world.map.objects;
+
+		var checkPosition = [newPosition[0], newPosition[1]];
+
+		//Modify the point we check against based where we are facing
+		if (this.direction === UP) {
+			checkPosition[1] -= 8;
+		}
+
+		if (this.direction === RIGHT) {
+			checkPosition[0] += 8;
+			checkPosition[1] -= 8;
+		}
+
+		if (this.direction === LEFT) {
+			checkPosition[0] -= 8;
+			checkPosition[1] -= 8;
+		}
+
+		//Check if there is an object on the grid we are about to go to
+		var targetGrid = [Math.floor(checkPosition[0] / 16), Math.floor(checkPosition[1] / 16)];
+
+		if (targetGrid[0] >= map.length) {
+			collision = true;
+		}
+		if (targetGrid[0] < 0) {
+			collision = true;
+		}
+		if (targetGrid[1] >= map[0].length) {
+			collision = true;
+		}
+	 	if (targetGrid[1] < 0) {
+	 		collision = true;
+	 	}
+
+	 	if (!map[targetGrid[0]] || !map[targetGrid[0]][targetGrid[1]]) {
+	 		collision = true;
+	 	} else if (!map[targetGrid[0]][targetGrid[1]].passable) {
+			collision = true;
+		}
+
+		return collision;
+	}
+
 	/**
 	 * Creates an object representation that can be sent back via sockets
 	 */
@@ -195,11 +259,22 @@ class GameObjectServerImplementation extends GameObject {
 	 */
 	getHit(projectile) {
 		var self = this;
+		//Can't be hit again for a short time
 		this.isInvincible = true;
 		setTimeout(function() {
 			self.isInvincible = false;
 		}, 500);
-		var direction = projectile.direction;
+		//Get knocked back
+		this.isMovingInvolunteraly = true;
+		this.knockback = {
+			speed: 150,
+			direction: projectile.direction
+		};
+		setTimeout(function() {
+			self.isMovingInvolunteraly = false;
+		}, 300);
+
+
 		this.events.emit("gotHit", projectile);
 	}
 
