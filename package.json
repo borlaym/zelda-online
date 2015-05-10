@@ -9,6 +9,9 @@
   "dist": "dist",
   "mainInput": "ZeldaOnlineApp",
   "mainOutput": "main",
+  "scripts": {
+        "start": "node server/server.js"
+  },
   "dependencies": {
     "babel": "^5.1.13",
     "express": "^4.12.3",
