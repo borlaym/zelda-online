@@ -255,7 +255,8 @@ class GameObjectServerImplementation extends GameObject {
 			type: this.type,
 			isMoving: this.isMoving,
 			isAttacking: this.isAttacking,
-			isInvincible: this.isInvincible
+			isInvincible: this.isInvincible,
+			name: this.name
 		}
 	}
 	/**

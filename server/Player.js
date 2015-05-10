@@ -16,6 +16,11 @@ class Player extends GameObject {
 	constructor(attributes) {
 		super(attributes);
 		this.socket = attributes.socket;
+		var self = this;
+		this.socket.on(Actions.JOIN, function(data) {
+			console.log(data);
+			self.name = data.name;
+		});
 		this.socket.on(Actions.START_MOVING, this.startMoving.bind(this));
 		this.socket.on(Actions.STOP_MOVING, this.stopMoving.bind(this));
 		this.socket.on(Actions.ATTACK, this.attack.bind(this));

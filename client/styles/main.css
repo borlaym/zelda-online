@@ -1,10 +1,32 @@
-canvas {
-  margin: 40px auto;
-  border: 1px solid black;
+.container {
+  width: 256px;
+  height: 176px;
+  
   transform: scale(3);
   -webkit-transform: scale(3);
   transform-origin: 0 0;
   -webkit-transform-origin: 0 0;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: pixelated;
+}
+
+canvas {
+	display: block;
+	width: 256px;
+  	height: 176px;
+  	border: 1px solid black;
+}
+
+
+.namePlate {
+	display: inline-block;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	text-align: center;
+	color: white;
+	font-family: 'VT323';
+	font-size: 6px;
+	width: 300px;
+	margin-left: -150px;
 }
