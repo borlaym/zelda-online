@@ -50,7 +50,7 @@ function tick() {
 
 }
 
-var name = localStorage.getItem("name") || window.prompt();
+var name = localStorage.getItem("name") || window.prompt("Name: ");
 localStorage.setItem("name", name);
 
 var server = window.location.href.indexOf("localhost") > -1 ? "http://localhost:5000" : 'http://zelda.kriek.io';
@@ -108,6 +108,7 @@ socket.on(Actions.REMOVE_OBJECT, function(id) {
     gameObjects = _.filter(gameObjects, function(object) {
         return object.id !== id;
     });
+    document.getElementById("container").removeChild(document.getElementById(id));
 });
 
 setInterval(function() {

@@ -29,4 +29,5 @@ canvas {
 	font-size: 6px;
 	width: 300px;
 	margin-left: -150px;
+	text-transform: uppercase;
 }
