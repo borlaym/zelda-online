@@ -82,6 +82,7 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     });
     object.position = data.position;
     object.isMoving = data.isMoving;
+    object.isInvincible = data.isInvincible;
     object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);
 });
@@ -99,10 +100,6 @@ socket.on(Actions.REMOVE_OBJECT, function(id) {
     gameObjects = _.filter(gameObjects, function(object) {
         return object.id !== id;
     });
-});
-
-socket.on(Actions.HIT, function(player) {
-    console.log(player);
 });
 
 setInterval(function() {

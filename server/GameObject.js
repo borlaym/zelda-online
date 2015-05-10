@@ -14,8 +14,8 @@ var UP = 0,
  * @return {Boolean} 
  */
 function rectanglesOverlap (rect1TopLeft, rect2TopLeft) {
-	var rect1BottomRight = [rect1TopLeft[0] + 16, rect1TopLeft[0] + 16];
-	var rect2BottomRight = [rect2TopLeft[0] + 16, rect2TopLeft[0] + 16];
+	var rect1BottomRight = [rect1TopLeft[0] + 16, rect1TopLeft[1] + 16];
+	var rect2BottomRight = [rect2TopLeft[0] + 16, rect2TopLeft[1] + 16];
 
 	if (rect1BottomRight[0] < rect2TopLeft[0] || rect2BottomRight[0] < rect1TopLeft[0]) {
 		return false;
@@ -54,14 +54,18 @@ class GameObjectServerImplementation extends GameObject {
 	}
 
 	update(dt) {
+		//Check if the character is moving anywhere
+
+		//If the player is moving but not attacking and not getting knocked back
 		if (this.isMoving && !this.isAttacking && !this.isMovingInvolunteraly) {
-			this.moving(dt);
+			this.move(dt);
 		}
-
+		//Otherwise if the player is getting knocked back
 		if (this.isMovingInvolunteraly) {
-			this.movingInvolunteraly(dt);
+			this.moveInvolunteraly(dt);
 		}
 
+		//Check if the character is in contact with any projectile
 		if (!this.isInvincible) {
 
 			var myPosition = this.getWorldPosition();
@@ -83,7 +87,7 @@ class GameObjectServerImplementation extends GameObject {
 
 	}
 
-	moving(dt) {
+	move(dt) {
 		var distance = this.speed * dt / 1000;
 
 		//First we only save the position that would become the object's position if everything was all right (ie no collisions)
@@ -122,7 +126,7 @@ class GameObjectServerImplementation extends GameObject {
 		}
 	}
 
-	movingInvolunteraly(dt) {
+	moveInvolunteraly(dt) {
 		var newPosition = [this.position[0], this.position[1]];
 		var distance = this.knockback.speed * dt / 1000;
 		switch(this.knockback.direction) {
@@ -146,9 +150,9 @@ class GameObjectServerImplementation extends GameObject {
 		var collision = this.checkCollisionWithWorldObjects(newPosition);
 
 		//Check collision with other players
-		if (!collision) {
-			collision = this.checkCollisionWithOtherPlayers(newPosition);
-		}
+		// if (!collision) {
+		// 	collision = this.checkCollisionWithOtherPlayers(newPosition);
+		// }
 
 		//If there was no collision with anything, we apply the new position to the player and emit a change event
 		if (!collision) {
@@ -250,7 +254,8 @@ class GameObjectServerImplementation extends GameObject {
 			direction: this.direction,
 			type: this.type,
 			isMoving: this.isMoving,
-			isAttacking: this.isAttacking
+			isAttacking: this.isAttacking,
+			isInvincible: this.isInvincible
 		}
 	}
 	/**
@@ -263,6 +268,7 @@ class GameObjectServerImplementation extends GameObject {
 		this.isInvincible = true;
 		setTimeout(function() {
 			self.isInvincible = false;
+			self.events.emit("change");
 		}, 500);
 		//Get knocked back
 		this.isMovingInvolunteraly = true;
@@ -274,8 +280,7 @@ class GameObjectServerImplementation extends GameObject {
 			self.isMovingInvolunteraly = false;
 		}, 300);
 
-
-		this.events.emit("gotHit", projectile);
+		this.events.emit("change");
 	}
 
 };
