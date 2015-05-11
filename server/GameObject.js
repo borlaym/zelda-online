@@ -160,7 +160,11 @@ class GameObjectServerImplementation extends GameObject {
 			this.events.emit("change");
 		}
 	}
-
+	/**
+	 * Check collision with other players, using two points along the edge where the character faces
+	 * @param  {[type]} newPosition [description]
+	 * @return {[type]}             [description]
+	 */
 	checkCollisionWithOtherPlayers(newPosition) {
 		var collision = false;
 		//We actually check both points on the directional edge, not just its center
@@ -198,23 +202,30 @@ class GameObjectServerImplementation extends GameObject {
 		return collision;
 	}
 
+	/**
+	 * Checks one point on the edge where the character is facing
+	 * @param  {[type]} newPosition [description]
+	 * @return {[type]}             [description]
+	 */
 	checkCollisionWithWorldObjects(newPosition) {
 		var collision = false;
 		var map = this.world.map.objects;
 
 		var checkPosition = [newPosition[0], newPosition[1]];
 
+		var directionToCheck = this.isMovingInvoluntarily ? this.knockback.direction : this.direction;
+
 		//Modify the point we check against based where we are facing
-		if (this.direction === UP) {
+		if (directionToCheck === UP) {
 			checkPosition[1] -= 8;
 		}
 
-		if (this.direction === RIGHT) {
+		if (directionToCheck === RIGHT) {
 			checkPosition[0] += 8;
 			checkPosition[1] -= 8;
 		}
 
-		if (this.direction === LEFT) {
+		if (directionToCheck === LEFT) {
 			checkPosition[0] -= 8;
 			checkPosition[1] -= 8;
 		}

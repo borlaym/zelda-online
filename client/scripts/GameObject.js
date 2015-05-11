@@ -38,7 +38,7 @@ class GameObjectClientImplementation extends GameObject {
 
 	draw(ctx) {
 		var drawPosition = [this.position[0] + this.spriteHandler.ORIGIN[0], this.position[1] + this.spriteHandler.ORIGIN[1]];
-		if (this.isInvincible) {
+		if (this.isInvincible && (new Date()).getTime() % 250 < 150) {
 			var inverse = this.getInverseImage();
 			ctx.drawImage(inverse, 
 							this.currentSprite[0], 
