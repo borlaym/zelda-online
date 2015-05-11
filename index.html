@@ -8,43 +8,53 @@
   <link href='//fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style type="text/css">
-      .container {
-      width: 256px;
-      height: 176px;
-      
-      transform: scale(3);
-      -webkit-transform: scale(3);
-      transform-origin: 0 0;
-      -webkit-transform-origin: 0 0;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: pixelated;
-    }
+.container {
+  width: 256px;
+  height: 176px;
+  
+  transform: scale(3);
+  -webkit-transform: scale(3);
+  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+}
 
-    canvas {
-      display: block;
-      width: 256px;
-        height: 176px;
-        border: 1px solid black;
-    }
+canvas {
+  display: block;
+  width: 256px;
+    height: 176px;
+    border: 1px solid black;
+}
 
 
-    .namePlate {
-      display: inline-block;
-      position: absolute;
-      left: 0px;
-      top: 0px;
-      text-align: center;
-      color: white;
-      font-family: 'VT323';
-      font-size: 6px;
-      width: 300px;
-      margin-left: -150px;
-      text-transform: uppercase;
-    }
+.namePlate {
+  display: inline-block;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  text-align: center;
+  color: white;
+  font-family: 'VT323';
+  font-size: 6px;
+  width: 300px;
+  margin-left: -150px;
+  text-transform: uppercase;
+}
+
+.ms {
+  position: absolute;
+  top: 0px;
+  right: -60px;
+  font-family: 'VT323';
+  font-size: 10px;
+  text-align: left;
+}
   </style>
 </head>
 <body>
   <div class="container" id="container">
+    <div class="ms" id="ms"></div>
     <canvas width=256 height=176></canvas>
   </div>
   <!--[if lt IE 8]>
