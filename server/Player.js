@@ -10,6 +10,30 @@ var UP = 0,
 	LEFT = 3;
 
 /**
+ * Helper function to check if two rectangles overlap
+ * @param  {Array} rect1  Top left corner of rectangle 1, array of two coordinates
+ * @param  {Array} rect2  Top left corner of rectangle 2, array of two coordinates
+ * @return {Boolean} 
+ */
+function rectanglesOverlap (rect1TopLeft, rect2TopLeft, rect1Dimensions, rect2Dimensions) {
+	rect1Dimensions = rect1Dimensions || [16, 16];
+	rect2Dimensions = rect2Dimensions || [16, 16];
+	var rect1BottomRight = [rect1TopLeft[0] + rect1Dimensions[0], rect1TopLeft[1] + rect1Dimensions[1]];
+	var rect2BottomRight = [rect2TopLeft[0] + rect2Dimensions[0], rect2TopLeft[1] + rect2Dimensions[1]];
+
+	if (rect1BottomRight[0] < rect2TopLeft[0] || rect2BottomRight[0] < rect1TopLeft[0]) {
+		return false;
+	}
+
+	if (rect1BottomRight[1] < rect2TopLeft[1] || rect2BottomRight[1] < rect1TopLeft[1]) {
+		return false;
+	}
+
+	return true;
+}
+
+
+/**
  * A game object that is controlled by a human player
  */
 class Player extends GameObject {
@@ -34,6 +58,17 @@ class Player extends GameObject {
 	stopMoving() {
 		this.isMoving = false;
 		this.events.emit("change");
+	}
+	update(dt) {
+		super.update(dt);
+		var pickups = this.world.items;
+		for (var i = 0; i < pickups.length; i++) {
+			var pickupPosition = [pickups[i].position[0] - 3.5, pickups[i].position[1] - 4];
+			if (rectanglesOverlap(this.getWorldPosition(), pickupPosition, [16,16], [7, 8])) {
+				this.health = 3;
+				pickups[i].destroy();
+			}
+		}
 	}
 	heartbeat() {
 		this.lastHeartbeat = new Date().getTime();

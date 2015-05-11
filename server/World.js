@@ -1,6 +1,7 @@
 var GameObject = require("./GameObject.js");
 var Actions = require("../shared/Actions.js");
 var Player = require("./Player.js");
+var Pickup = require("./Pickup.js");
 var Map = require("../shared/Map.js");
 var ObjectTypes = require("../shared/ObjectTypes.js");
 
@@ -11,9 +12,14 @@ class World {
 		var self = this;
 		self.lastTick = new Date().getTime();
 		this.generateMap();
+		this.items = [];
 		setInterval(function() {
 			self.tick();
 		}, 1000/60);
+
+		setInterval(function() {
+			self.spawnRandomItem();
+		}, 20000);
 	}
 	generateMap() {
 		this.map = new Map();
@@ -62,17 +68,33 @@ class World {
 	getState() {
 		var state = {
 			players: [],
-			map: {}
+			map: {},
+			items: []
 		};
 		for (var key in this.players) {
 			state.players.push(this.players[key].getObject());
 		}
+		state.items = this.items.map(function(item) {
+			return item.getObject();
+		});
 		state.map = this.map.getState();
 		return state;
 	}
 	sendToEveryone(action, data) {
 		for (var key in this.players) {
 			this.players[key].socket.emit(action, data);
+		}
+	}
+	spawnRandomItem() {
+		var self = this;
+		if (this.items.length === 0) {
+			var newItem = new Pickup(this);
+			newItem.events.on("destroy", function() {
+				self.items = [];
+				self.sendToEveryone(Actions.REMOVE_PICKUP, newItem.getObject());
+			});
+			this.items.push(newItem);
+			this.sendToEveryone(Actions.ADD_PICKUP, newItem.getObject());
 		}
 	}
 }

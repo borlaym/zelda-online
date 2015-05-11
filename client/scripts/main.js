@@ -6,6 +6,7 @@ var _ = require("lodash");
 var io = require("socket.io-client");
 var Actions = require("../../shared/Actions.js");
 var GameObject = require("./GameObject.js");
+var Pickup = require("./Pickup.js");
 var WorldObject = require("./WorldObject.js");
 var keyHandler = require("./keyHandler.js");
 
@@ -24,6 +25,7 @@ loadAllSprites.then(function() {
 
 var gameObjects = [];
 var map = [];
+var pickups = [];
 var lastTick;
 
 function tick() {
@@ -39,6 +41,10 @@ function tick() {
                 map[i][j].draw(ctx);
             }
         }
+    }
+
+    for (var i = 0; i < pickups.length; i++) {
+        pickups[i].draw(ctx);
     }
 
 
@@ -86,6 +92,9 @@ socket.on(Actions.INITIAL_STATE, function(data) {
             }
         }
     }
+    for (var i = 0; i < data.items.length; i++) {
+        pickups.push(new Pickup(data.items[i]));
+    }
 });
 
 socket.on(Actions.OBJECT_UPDATE, function(data) {
@@ -110,6 +119,14 @@ socket.on(Actions.ADD_OBJECT, function(data) {
         direction: data.direction,
         id: data.id
     }));
+});
+
+socket.on(Actions.ADD_PICKUP, function(data) {
+    pickups.push(new Pickup(data));
+});
+
+socket.on(Actions.REMOVE_PICKUP, function(data) {
+    pickups = [];
 });
 
 socket.on(Actions.REMOVE_OBJECT, function(id) {
