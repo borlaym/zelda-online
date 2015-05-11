@@ -64,6 +64,17 @@ class GameObjectClientImplementation extends GameObject {
 							this.spriteHandler.WIDTH, 
 							this.spriteHandler.HEIGHT);
 
+		} else if (this.state === 0 && this.id !== window.playerID) {
+			var silhouette = this.getBlackSilhouette();
+			ctx.drawImage(silhouette, 
+							this.currentSprite[0], 
+							this.currentSprite[1], 
+							this.spriteHandler.WIDTH, 
+							this.spriteHandler.HEIGHT, 
+							drawPosition[0], 
+							drawPosition[1], 
+							this.spriteHandler.WIDTH, 
+							this.spriteHandler.HEIGHT);
 		} else {
 			ctx.drawImage(this.spriteHandler.image, 
 							this.currentSprite[0], 
@@ -127,6 +138,27 @@ class GameObjectClientImplementation extends GameObject {
 
 		}
 		return this.inverseImage;
+	}
+
+	getBlackSilhouette() {
+		if (!this.silhouetteImage) {
+			this.silhouetteImage = document.createElement("canvas");
+			this.silhouetteImage.width = this.spriteHandler.image.width;
+			this.silhouetteImage.height = this.spriteHandler.image.height;
+			var ctx = this.silhouetteImage.getContext("2d");
+			ctx.drawImage(this.spriteHandler.image, 0, 0);
+			var imgData = ctx.getImageData(0,0,this.silhouetteImage.width, this.silhouetteImage.height);
+			var data = imgData.data;
+			for (var i = 0; i < data.length / 4; i++) {
+				data[i*4] = 0;
+				data[i*4 + 1] = 0;
+				data[i*4 + 2] = 0;
+			}
+			ctx.clearRect(0,0,this.silhouetteImage.width, this.silhouetteImage.height);
+			ctx.putImageData(imgData, 0, 0);
+
+		}
+		return this.silhouetteImage;
 	}
 
 
