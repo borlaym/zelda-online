@@ -3,6 +3,7 @@ var ObjectTypes = require("../../shared/ObjectTypes.js");
 
 var linkSpriteHandler = require("./spriteHandlers/link.js");
 var projectileHandler = require("./spriteHandlers/projectiles.js");
+var itemHandler = require("./spriteHandlers/items.js");
 
 var UP = 0,
 	RIGHT = 1,
@@ -20,7 +21,6 @@ class GameObjectClientImplementation extends GameObject {
 		this.lastSpriteChange = [0, 0, 0, 0];
 		this.spriteChangeFrequency = 200;
 		this.currentFrame = 0;
-		console.log("TYPE", this.type);
 		switch(this.type) {
 			case ObjectTypes.PLAYER_LINK:
 				this.spriteHandler = linkSpriteHandler;
@@ -38,25 +38,33 @@ class GameObjectClientImplementation extends GameObject {
 
 	draw(ctx) {
 		var drawPosition = [this.position[0] + this.spriteHandler.ORIGIN[0], this.position[1] + this.spriteHandler.ORIGIN[1]];
-		if (this.isInvincible) {
-			ctx.save();
-			ctx.globalAlpha = 0.3;
-			ctx.fillRect(this.position[0] - 8, this.position[1] - 16, 16, 16);
-			ctx.restore();
+		if (this.isInvincible && (new Date()).getTime() % 250 < 150) {
+			var inverse = this.getInverseImage();
+			ctx.drawImage(inverse, 
+							this.currentSprite[0], 
+							this.currentSprite[1], 
+							this.spriteHandler.WIDTH, 
+							this.spriteHandler.HEIGHT, 
+							drawPosition[0], 
+							drawPosition[1], 
+							this.spriteHandler.WIDTH, 
+							this.spriteHandler.HEIGHT);
+
+		} else {
+			ctx.drawImage(this.spriteHandler.image, 
+							this.currentSprite[0], 
+							this.currentSprite[1], 
+							this.spriteHandler.WIDTH, 
+							this.spriteHandler.HEIGHT, 
+							drawPosition[0], 
+							drawPosition[1], 
+							this.spriteHandler.WIDTH, 
+							this.spriteHandler.HEIGHT);
 		}
-		ctx.drawImage(this.spriteHandler.image, 
-						this.currentSprite[0], 
-						this.currentSprite[1], 
-						this.spriteHandler.WIDTH, 
-						this.spriteHandler.HEIGHT, 
-						drawPosition[0], 
-						drawPosition[1], 
-						this.spriteHandler.WIDTH, 
-						this.spriteHandler.HEIGHT);
 
-		//Show name if it's a player
+		//Show name and health if it's a player
 		if (this.type === ObjectTypes.PLAYER_LINK && this.name) {
-
+			//Show nameplate
 			var namePlate = document.getElementById(this.id);
 
 			if (!namePlate) {
@@ -70,8 +78,41 @@ class GameObjectClientImplementation extends GameObject {
 			namePlate.style.left = (this.position[0]) + "px";
 			namePlate.style.top = (this.position[1] - 24) + "px";
 
-			
+			//Show health
+			for (var i = 0; i < this.health; i++) {
+				ctx.drawImage(itemHandler.image,
+								itemHandler.sprites[ObjectTypes.HEART][0],
+								itemHandler.sprites[ObjectTypes.HEART][1],
+								itemHandler.sprites[ObjectTypes.HEART][2],
+								itemHandler.sprites[ObjectTypes.HEART][3],
+								this.position[0] - 9 + (i * (itemHandler.sprites[ObjectTypes.HEART][2] + 1)),
+								this.position[1] + 1,
+								itemHandler.sprites[ObjectTypes.HEART][2],
+								itemHandler.sprites[ObjectTypes.HEART][3]
+					)
+			}
 		}
+	}
+
+	getInverseImage() {
+		if (!this.inverseImage) {
+			this.inverseImage = document.createElement("canvas");
+			this.inverseImage.width = this.spriteHandler.image.width;
+			this.inverseImage.height = this.spriteHandler.image.height;
+			var ctx = this.inverseImage.getContext("2d");
+			ctx.drawImage(this.spriteHandler.image, 0, 0);
+			var imgData = ctx.getImageData(0,0,this.inverseImage.width, this.inverseImage.height);
+			var data = imgData.data;
+			for (var i = 0; i < data.length / 4; i++) {
+				data[i*4] = 255 - data[i*4];
+				data[i*4 + 1] = 255 - data[i*4 + 1];
+				data[i*4 + 2] = 255 - data[i*4 + 2];
+			}
+			ctx.clearRect(0,0,this.inverseImage.width, this.inverseImage.height);
+			ctx.putImageData(imgData, 0, 0);
+
+		}
+		return this.inverseImage;
 	}
 
 

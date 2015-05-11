@@ -31,3 +31,12 @@ canvas {
 	margin-left: -150px;
 	text-transform: uppercase;
 }
+
+.ms {
+	position: absolute;
+	top: 0px;
+	right: -60px;
+	font-family: 'VT323';
+	font-size: 10px;
+	text-align: left;
+}

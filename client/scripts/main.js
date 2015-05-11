@@ -9,6 +9,8 @@ var GameObject = require("./GameObject.js");
 var WorldObject = require("./WorldObject.js");
 var keyHandler = require("./keyHandler.js");
 
+var css = require("../styles/main.css");
+
 
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
@@ -90,6 +92,7 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     object.position = data.position;
     object.isMoving = data.isMoving;
     object.name = data.name;
+    object.health = data.health;
     object.isInvincible = data.isInvincible;
     object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);
@@ -108,9 +111,19 @@ socket.on(Actions.REMOVE_OBJECT, function(id) {
     gameObjects = _.filter(gameObjects, function(object) {
         return object.id !== id;
     });
-    document.getElementById("container").removeChild(document.getElementById(id));
+    if (document.getElementById(id)) {
+        document.getElementById("container").removeChild(document.getElementById(id));
+    }
 });
 
+socket.on(Actions.HEARTBEAT, function() {
+    var ms = new Date().getTime() - lastHeartBeat;
+    document.getElementById("ms").innerHTML = "Latency: " + ms + "ms";
+});
+
+var lastHeartBeat = 0;
+
 setInterval(function() {
+    lastHeartBeat = new Date().getTime();
     socket.emit(Actions.HEARTBEAT);
 }, 1000);

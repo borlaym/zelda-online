@@ -7,5 +7,6 @@ module.exports = keymirror({
 	"FLOOR_DIRT": null,
 	"HILL": null,
 	"MOUNTAINS": null,
-	"FOREST": null
+	"FOREST": null,
+	"HEART": null
 });

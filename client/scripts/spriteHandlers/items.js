@@ -7,20 +7,7 @@ module.exports = {
 	ORIGIN: [-8, -16],
 
 	sprites: {
-		[ObjectTypes.SWORD]: [
-			[//UP,
-				[32, 0], 
-			],
-			[ //RIGHT
-				[48, 0]
-			],
-			[ //DOWN,
-				[0, 0],
-			],
-			[ //LEFT,
-				[16, 0]
-			]
-		]
+		[ObjectTypes.HEART]: [258, 123, 5, 5]
 	},
 
 	load: function() {
@@ -28,7 +15,7 @@ module.exports = {
 		return new Promise(function(success, failure) {
 			self.image = new Image();
 			self.image.onload = success;
-			self.image.src = "images/spritesheets/projectiles.png"
+			self.image.src = "images/spritesheets/zelda-sprites-items.png"
 		});
 		
 	}

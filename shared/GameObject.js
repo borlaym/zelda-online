@@ -16,6 +16,7 @@ class GameObject {
 		this.position = attributes.position || [32, 32];
 		this.isMoving = false;
 		this.speed = 50;
+		this.health = attributes.health;
 	}
 
 	setDirection(direction) {

@@ -18,7 +18,6 @@ class Player extends GameObject {
 		this.socket = attributes.socket;
 		var self = this;
 		this.socket.on(Actions.JOIN, function(data) {
-			console.log(data);
 			self.name = data.name;
 		});
 		this.socket.on(Actions.START_MOVING, this.startMoving.bind(this));
@@ -38,7 +37,8 @@ class Player extends GameObject {
 	}
 	heartbeat() {
 		this.lastHeartbeat = new Date().getTime();
-	}űűű
+		this.socket.emit(Actions.HEARTBEAT);
+	}
 	attack() {
 		if (this.projectiles.length !== 0) {
 			return;
@@ -86,6 +86,7 @@ class Player extends GameObject {
 			duration: 200,
 			owner: this,
 			id: this.id + "sword",
+			damage: 1,
 			world: this.world
 		});
 
