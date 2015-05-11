@@ -11,6 +11,7 @@ class Projectile extends GameObject {
 		var self = this;
 		this.owner = params.owner;
 		this.isAttached = params.isAttached;
+		this.damage = params.damage;
 		setTimeout(function() {
 			self.disappear();
 		}, params.duration);

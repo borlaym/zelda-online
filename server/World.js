@@ -23,7 +23,8 @@ class World {
 			socket: socket,
 			id: socket.id,
 			world: this,
-			type: ObjectTypes.PLAYER_LINK
+			type: ObjectTypes.PLAYER_LINK,
+			health: 3
 		});
 		player.events.on("change", data => this.sendToEveryone(Actions.OBJECT_UPDATE, player.getObject()));
 		player.events.on("projectileSpawned", projectile => this.sendToEveryone(Actions.ADD_OBJECT, projectile.getObject()));

@@ -3,6 +3,7 @@ var ObjectTypes = require("../../shared/ObjectTypes.js");
 
 var linkSpriteHandler = require("./spriteHandlers/link.js");
 var projectileHandler = require("./spriteHandlers/projectiles.js");
+var itemHandler = require("./spriteHandlers/items.js");
 
 var UP = 0,
 	RIGHT = 1,
@@ -20,7 +21,6 @@ class GameObjectClientImplementation extends GameObject {
 		this.lastSpriteChange = [0, 0, 0, 0];
 		this.spriteChangeFrequency = 200;
 		this.currentFrame = 0;
-		console.log("TYPE", this.type);
 		switch(this.type) {
 			case ObjectTypes.PLAYER_LINK:
 				this.spriteHandler = linkSpriteHandler;
@@ -62,9 +62,9 @@ class GameObjectClientImplementation extends GameObject {
 							this.spriteHandler.HEIGHT);
 		}
 
-		//Show name if it's a player
+		//Show name and health if it's a player
 		if (this.type === ObjectTypes.PLAYER_LINK && this.name) {
-
+			//Show nameplate
 			var namePlate = document.getElementById(this.id);
 
 			if (!namePlate) {
@@ -78,7 +78,19 @@ class GameObjectClientImplementation extends GameObject {
 			namePlate.style.left = (this.position[0]) + "px";
 			namePlate.style.top = (this.position[1] - 24) + "px";
 
-			
+			//Show health
+			for (var i = 0; i < this.health; i++) {
+				ctx.drawImage(itemHandler.image,
+								itemHandler.sprites[ObjectTypes.HEART][0],
+								itemHandler.sprites[ObjectTypes.HEART][1],
+								itemHandler.sprites[ObjectTypes.HEART][2],
+								itemHandler.sprites[ObjectTypes.HEART][3],
+								this.position[0] - 9 + (i * (itemHandler.sprites[ObjectTypes.HEART][2] + 1)),
+								this.position[1] + 1,
+								itemHandler.sprites[ObjectTypes.HEART][2],
+								itemHandler.sprites[ObjectTypes.HEART][3]
+					)
+			}
 		}
 	}
 

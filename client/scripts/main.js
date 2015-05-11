@@ -92,6 +92,7 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     object.position = data.position;
     object.isMoving = data.isMoving;
     object.name = data.name;
+    object.health = data.health;
     object.isInvincible = data.isInvincible;
     object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);

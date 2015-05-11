@@ -86,6 +86,7 @@ class Player extends GameObject {
 			duration: 200,
 			owner: this,
 			id: this.id + "sword",
+			damage: 1,
 			world: this.world
 		});
 

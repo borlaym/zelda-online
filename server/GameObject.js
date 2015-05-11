@@ -267,7 +267,8 @@ class GameObjectServerImplementation extends GameObject {
 			isMoving: this.isMoving,
 			isAttacking: this.isAttacking,
 			isInvincible: this.isInvincible,
-			name: this.name
+			name: this.name,
+			health: this.health
 		}
 	}
 	/**
@@ -276,6 +277,12 @@ class GameObjectServerImplementation extends GameObject {
 	 */
 	getHit(projectile) {
 		var self = this;
+		//Damage
+		this.health = this.health - projectile.damage;
+		if (this.health <= 0) {
+			this.die();
+			return;
+		}
 		//Can't be hit again for a short time
 		this.isInvincible = true;
 		setTimeout(function() {
@@ -307,6 +314,10 @@ class GameObjectServerImplementation extends GameObject {
 			self.isMovingInvoluntarily = false;
 		}, settings.duration);
 
+	}
+
+	die() {
+		this.events.emit("change");
 	}
 
 };
