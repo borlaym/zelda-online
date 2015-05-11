@@ -317,7 +317,7 @@ class GameObjectServerImplementation extends GameObject {
 	}
 
 	die() {
-		this.events.emit("change");
+		this.events.emit("die");
 	}
 
 };

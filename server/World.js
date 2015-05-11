@@ -30,6 +30,7 @@ class World {
 		player.events.on("projectileSpawned", projectile => this.sendToEveryone(Actions.ADD_OBJECT, projectile.getObject()));
 		player.events.on("projectileRemoved", projectile => this.sendToEveryone(Actions.REMOVE_OBJECT, projectile.id));
 		player.events.on("projectile:change", projectile => this.sendToEveryone(Actions.OBJECT_UPDATE, projectile.getObject()));
+		player.events.on("die", noparam => this.removePlayer(player.socket));
 		this.players[socket.id] = player;
 		player.socket.emit(Actions.INITIAL_STATE, this.getState());
 		player.socket.broadcast.emit(Actions.ADD_OBJECT, player.getObject());
