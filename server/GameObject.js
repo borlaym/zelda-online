@@ -46,14 +46,24 @@ function pointIsInRectangle(rectangle, point) {
  * Server side implementation of the GameObject, which handles actions
  */
 class GameObjectServerImplementation extends GameObject {
-
 	constructor(attributes) {
 		super(attributes);
 		this.events = new EventEmitter;
 		this.world = attributes.world;
+		this.states = {
+			ALIVE: 1,
+			DEAD: 0
+		}
+		this.state = this.states.ALIVE;
 	}
-
+	
 	update(dt) {
+
+		//Check if dead
+		if (this.state === this.states.DEAD) {
+			return;
+		}
+
 		//Check if the character is moving anywhere
 
 		//If the player is moving but not attacking and not getting knocked back
@@ -193,7 +203,7 @@ class GameObjectServerImplementation extends GameObject {
 			var otherPlayer = this.world.players[key];
 			if (otherPlayer.id !== this.id) {
 				var otherPlayerPosition = [otherPlayer.position[0] - 8, otherPlayer.position[1] - 16];
-				if (pointIsInRectangle(otherPlayerPosition, checkPoint1) || pointIsInRectangle(otherPlayerPosition, checkPoint2)) {
+				if ((pointIsInRectangle(otherPlayerPosition, checkPoint1) || pointIsInRectangle(otherPlayerPosition, checkPoint2)) && otherPlayer.state)  {
 					collision = true;
 				}
 			}
@@ -268,6 +278,7 @@ class GameObjectServerImplementation extends GameObject {
 			isAttacking: this.isAttacking,
 			isInvincible: this.isInvincible,
 			name: this.name,
+			state: this.state,
 			health: this.health
 		}
 	}
@@ -316,8 +327,24 @@ class GameObjectServerImplementation extends GameObject {
 
 	}
 
+	spawn() {
+		var respawnPoint = this.world.getEmptySpace();
+		this.position = [respawnPoint[0] * 16 + 8, respawnPoint[1] * 16 + 16];
+		this.health = 3;
+		this.events.emit("change");
+	}
+
 	die() {
-		this.events.emit("die");
+		this.state = this.states.DEAD;
+		this.events.emit("change");
+
+		//respawn
+		var self = this;
+		setTimeout(function() {
+			self.state = self.states.ALIVE;
+			self.spawn();
+			self.events.emit("change");
+		}, 3000);
 	}
 
 };

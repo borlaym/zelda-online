@@ -37,6 +37,20 @@ class GameObjectClientImplementation extends GameObject {
 	}
 
 	draw(ctx) {
+		//If dead, and it's you, draw a black screen
+		if (this.id === window.playerID && this.state === 0) {
+			ctx.save();
+			ctx.fillStyle = "black";
+			ctx.fillRect(0,0, 1000, 1000);
+			ctx.restore();
+		}
+
+		//If my character is dead, don't draw other characters
+		if (window.myCharacter.state === 0 && this.id !== window.playerID) {
+			return;
+		}
+
+		//Draw object sprite
 		var drawPosition = [this.position[0] + this.spriteHandler.ORIGIN[0], this.position[1] + this.spriteHandler.ORIGIN[1]];
 		if (this.isInvincible && (new Date()).getTime() % 250 < 150) {
 			var inverse = this.getInverseImage();
