@@ -9,6 +9,8 @@ var GameObject = require("./GameObject.js");
 var WorldObject = require("./WorldObject.js");
 var keyHandler = require("./keyHandler.js");
 
+var css = require("../styles/main.css");
+
 
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
@@ -108,7 +110,9 @@ socket.on(Actions.REMOVE_OBJECT, function(id) {
     gameObjects = _.filter(gameObjects, function(object) {
         return object.id !== id;
     });
-    document.getElementById("container").removeChild(document.getElementById(id));
+    if (document.getElementById(id)) {
+        document.getElementById("container").removeChild(document.getElementById(id));
+    }
 });
 
 socket.on(Actions.HEARTBEAT, function() {
