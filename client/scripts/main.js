@@ -64,7 +64,6 @@ socket.emit(Actions.JOIN, {
 });
 
 socket.on(Actions.INITIAL_STATE, function(data) {
-    console.log(data);
     for (var i = 0; i < data.players.length; i++) {
     	gameObjects.push(new GameObject({
     		position: data.players[i].position,
@@ -94,6 +93,7 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     object.name = data.name;
     object.health = data.health;
     object.isInvincible = data.isInvincible;
+    object.state = data.state;
     object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);
 });
@@ -108,6 +108,12 @@ socket.on(Actions.ADD_OBJECT, function(data) {
 });
 
 socket.on(Actions.REMOVE_OBJECT, function(id) {
+
+    if (id === socket.id) {
+        alert("DEAD! Refresh to respawn");
+    }
+
+
     gameObjects = _.filter(gameObjects, function(object) {
         return object.id !== id;
     });

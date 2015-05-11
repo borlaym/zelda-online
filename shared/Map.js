@@ -1,5 +1,6 @@
 var ObjectTypes = require("./ObjectTypes.js");
 var WorldObject = require("./WorldObject.js");
+var _ = require("lodash");
 
 class Map {
 	constructor() {
@@ -28,6 +29,15 @@ class Map {
 	}
 	getState() {
 		return this.objects;
+	}
+	getEmptySpace() {
+		var rndX, rndY, space;
+		do {
+			rndX = Math.floor(Math.random() * this.objects.length);
+			rndY = Math.floor(Math.random() * this.objects[0].length);
+			space = this.objects[rndX][rndY];
+		} while (space.type !== ObjectTypes.FLOOR_DIRT && rndX !== 0 && rndY !== 0 && rndX !== this.objects.length - 1 && rndY !== this.objects[0].length - 1);
+		return [rndX, rndY];
 	}
 }
 
