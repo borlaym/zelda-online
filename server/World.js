@@ -42,7 +42,6 @@ class World {
 	tick() {
 		var now = new Date().getTime();
 		var dt = now - this.lastTick;
-		console.log(dt);
 		this.lastTick = now;
 		for (var key in this.players) {
 			var player = this.players[key];
