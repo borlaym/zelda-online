@@ -36,7 +36,7 @@ class World {
 		player.socket.broadcast.emit(Actions.ADD_OBJECT, player.getObject());
 	}
 	removePlayer(socket) {
-		socket.broadcast.emit(Actions.REMOVE_OBJECT, socket.id);
+		this.sendToEveryone(Actions.REMOVE_OBJECT, socket.id);
 		delete this.players[socket.id];
 	}
 	tick() {
