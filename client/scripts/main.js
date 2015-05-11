@@ -111,6 +111,14 @@ socket.on(Actions.REMOVE_OBJECT, function(id) {
     document.getElementById("container").removeChild(document.getElementById(id));
 });
 
+socket.on(Actions.HEARTBEAT, function() {
+    var ms = new Date().getTime() - lastHeartBeat;
+    document.getElementById("ms").innerHTML = "Latency: " + ms + "ms";
+});
+
+var lastHeartBeat = 0;
+
 setInterval(function() {
+    lastHeartBeat = new Date().getTime();
     socket.emit(Actions.HEARTBEAT);
 }, 1000);

@@ -37,7 +37,8 @@ class Player extends GameObject {
 	}
 	heartbeat() {
 		this.lastHeartbeat = new Date().getTime();
-	}űűű
+		this.socket.emit(Actions.HEARTBEAT);
+	}
 	attack() {
 		if (this.projectiles.length !== 0) {
 			return;
