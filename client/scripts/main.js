@@ -55,7 +55,7 @@ function tick() {
 var name = localStorage.getItem("name") || window.prompt("Name: ");
 localStorage.setItem("name", name);
 
-var server = window.location.href.indexOf("localhost") > -1 ? "http://localhost:5000" : 'http://zelda.kriek.io';
+var server = window.location.href.indexOf("localhost") > -1 ? "http://localhost:5000" : 'http://zelda.kriekapps.com';
 var socket = io(server);
 keyHandler.socket = socket;
 
