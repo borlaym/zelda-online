@@ -125,6 +125,10 @@ socket.on(Actions.ADD_PICKUP, function(data) {
     pickups.push(new Pickup(data));
 });
 
+socket.on(Actions.REMOVE_PICKUP, function(data) {
+    pickups = [];
+});
+
 socket.on(Actions.REMOVE_OBJECT, function(id) {
 
     gameObjects = _.filter(gameObjects, function(object) {

@@ -19,7 +19,7 @@ class World {
 
 		setInterval(function() {
 			self.spawnRandomItem();
-		}, 5000);
+		}, 20000);
 	}
 	generateMap() {
 		this.map = new Map();
@@ -86,8 +86,13 @@ class World {
 		}
 	}
 	spawnRandomItem() {
+		var self = this;
 		if (this.items.length === 0) {
 			var newItem = new Pickup(this);
+			newItem.events.on("destroy", function() {
+				self.items = [];
+				self.sendToEveryone(Actions.REMOVE_PICKUP, newItem.getObject());
+			});
 			this.items.push(newItem);
 			this.sendToEveryone(Actions.ADD_PICKUP, newItem.getObject());
 		}

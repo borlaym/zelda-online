@@ -7,6 +7,7 @@ module.exports = keymirror({
 	"OBJECT_UPDATE": null,
 	"ADD_OBJECT": null,
 	"ADD_PICKUP": null,
+	"REMOVE_PICKUP": null,
 	"REMOVE_OBJECT": null,
 	"HEARTBEAT": null,
 	"ATTACK": null,
