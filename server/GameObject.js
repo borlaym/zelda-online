@@ -329,7 +329,7 @@ class GameObjectServerImplementation extends GameObject {
 
 	spawn() {
 		var respawnPoint = this.world.getEmptySpace();
-		this.position = [respawnPoint[0] * 16, respawnPoint[1] * 16];
+		this.position = [respawnPoint[0] * 16 + 8, respawnPoint[1] * 16 + 16];
 		this.health = 3;
 		this.events.emit("change");
 	}

@@ -26,7 +26,6 @@ var gameObjects = [];
 var map = [];
 var lastTick;
 
-
 function tick() {
     var now = new Date();
     var dt = now - lastTick;
@@ -64,13 +63,18 @@ socket.emit(Actions.JOIN, {
 });
 
 socket.on(Actions.INITIAL_STATE, function(data) {
+    window.playerID = socket.id;
     for (var i = 0; i < data.players.length; i++) {
-    	gameObjects.push(new GameObject({
+        var newGameObject = new GameObject({
     		position: data.players[i].position,
     		type: data.players[i].type,
     		direction: data.players[i].direction,
     		id: data.players[i].id
-    	}));
+    	});
+        gameObjects.push(newGameObject);
+        if (newGameObject.id === socket.id) {
+            window.myCharacter = newGameObject;
+        }
     }
     for (var i = 0; i < data.map.length; i++) {
         map.push([]);
@@ -96,6 +100,7 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     object.state = data.state;
     object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);
+
 });
 
 socket.on(Actions.ADD_OBJECT, function(data) {
@@ -108,11 +113,6 @@ socket.on(Actions.ADD_OBJECT, function(data) {
 });
 
 socket.on(Actions.REMOVE_OBJECT, function(id) {
-
-    if (id === socket.id) {
-        alert("DEAD! Refresh to respawn");
-    }
-
 
     gameObjects = _.filter(gameObjects, function(object) {
         return object.id !== id;
