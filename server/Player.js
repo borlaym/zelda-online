@@ -52,8 +52,10 @@ class Player extends GameObject {
 		this.projectiles = [];
 	}
 	startMoving(data) {
-		this.isMoving = true;
-		this.direction = data;
+		if (!this.isMovingInvoluntarily && !this.isAttacking && this.state) {
+			this.isMoving = true;
+			this.direction = data;
+		}
 	}
 	stopMoving() {
 		this.isMoving = false;
@@ -65,7 +67,7 @@ class Player extends GameObject {
 		for (var i = 0; i < pickups.length; i++) {
 			var pickupPosition = [pickups[i].position[0] - 3.5, pickups[i].position[1] - 4];
 			if (rectanglesOverlap(this.getWorldPosition(), pickupPosition, [16,16], [7, 8])) {
-				this.health = 3;
+				this.health = Math.min(3, this.health + 1);
 				pickups[i].destroy();
 			}
 		}
@@ -121,7 +123,7 @@ class Player extends GameObject {
 			duration: 200,
 			owner: this,
 			id: this.id + "sword",
-			damage: 1,
+			damage: 0.5,
 			world: this.world
 		});
 
