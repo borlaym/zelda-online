@@ -3,7 +3,9 @@ var WorldObject = require("./WorldObject.js");
 var _ = require("lodash");
 
 class Map {
-	constructor() {
+	constructor(attributes) {
+		this.position = attributes.position;
+		console.log(this.position)
 		this.objects = [];
 		for (var x = 0; x < 16; x++) {
 			this.objects.push([]);

@@ -71,6 +71,40 @@ class Player extends GameObject {
 		// 		pickups[i].destroy();
 		// 	}
 		// }
+		// 
+		// 
+		
+		var map;
+
+		if ((this.position[0] <= 16 && this.direction === LEFT) ||
+			(this.position[0] >= 246 && this.direction === RIGHT) ||
+			(this.position[1] <= 16 && this.direction === UP) ||
+			(this.position[1] >= 166 && this.direction === DOWN))
+		{
+			map = this.world.getAdjacentMap(this.map, this.direction);
+			if (map) {
+				this.events.emit("map:transition", map)
+			}
+			
+		}
+	}
+	transitionToMap(map) {
+		this.map = map;
+		switch(this.direction) {
+			case UP:
+				this.position[1] = 176;
+				break;
+			case RIGHT:
+				this.position[0] = 0;
+				break;
+			case DOWN:
+				this.position[1] = 0;
+				break;
+			case LEFT:
+				this.position[0] = 256;
+				break;
+		}
+		this.events.emit("change");
 	}
 	heartbeat() {
 		this.lastHeartbeat = new Date().getTime();

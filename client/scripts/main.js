@@ -70,6 +70,8 @@ socket.emit(Actions.JOIN, {
 
 socket.on(Actions.INITIAL_STATE, function(data) {
     window.playerID = socket.id;
+    gameObjects = [];
+    map = [];
     for (var i = 0; i < data.players.length; i++) {
         var newGameObject = new GameObject({
     		position: data.players[i].position,
@@ -98,7 +100,6 @@ socket.on(Actions.INITIAL_STATE, function(data) {
 });
 
 socket.on(Actions.OBJECT_UPDATE, function(data) {
-    console.log(data);
     var object = _.find(gameObjects, function(object) {
         return object.id === data.id;
     });

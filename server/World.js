@@ -5,6 +5,12 @@ var Pickup = require("./Pickup.js");
 var Map = require("../shared/Map.js");
 var ObjectTypes = require("../shared/ObjectTypes.js");
 
+var NORTH = 0,
+	EAST = 1,
+	SOUTH = 2,
+	WEST = 3
+
+
 class World {
 	constructor(attributes) {
 		this.io = attributes.io;
@@ -28,10 +34,13 @@ class World {
 		// }, 20000);
 	}
 	generateMap() {
-		for (var row = 0; row < 1; row++) {
+		for (var row = 0; row < 3; row++) {
 			this.maps.push([]);
-			for (var col = 0; col < 2; col++) {
-				this.maps[row].push(new Map());
+			for (var col = 0; col < 3; col++) {
+				this.maps[row].push(new Map({
+					position: [row, col]
+				}));
+
 			}
 		}
 	}
@@ -44,13 +53,19 @@ class World {
 			health: 3,
 			map: this.maps[0][0]
 		});
-		console.log(player.map.id);
 		player.socket.join(player.map.id);
 		player.spawn();
 		player.events.on("change", data => this.sendToEveryone(player.map.id, Actions.OBJECT_UPDATE, player.getObject()));
 		player.events.on("projectileSpawned", projectile => this.sendToEveryone(player.map.id, Actions.ADD_OBJECT, projectile.getObject()));
 		player.events.on("projectileRemoved", projectile => this.sendToEveryone(player.map.id, Actions.REMOVE_OBJECT, projectile.id));
 		player.events.on("projectile:change", projectile => this.sendToEveryone(player.map.id, Actions.OBJECT_UPDATE, projectile.getObject()));
+		player.events.on("map:transition", map => {
+			player.socket.leave(player.map.id);
+			player.socket.join(map.id);
+			player.transitionToMap(map);
+			player.socket.emit(Actions.INITIAL_STATE, this.getState(player.map));
+
+		});
 		this.players[socket.id] = player;
 		player.socket.emit(Actions.INITIAL_STATE, this.getState(player.map));
 		player.socket.to(player.map.id).emit(Actions.ADD_OBJECT, player.getObject());
@@ -93,6 +108,26 @@ class World {
 		// });
 		state.map = map.getState();
 		return state;
+	}
+	getAdjacentMap(map, direction) {
+		var targetPosition = [map.position[0], map.position[1]];
+
+		if (direction === NORTH) {
+			targetPosition[0] -= 1;
+		}
+		if (direction === EAST) {
+			targetPosition[1] += 1;
+		}
+		if (direction === SOUTH) {
+			targetPosition[0] += 1;
+		}
+		if (direction === WEST) {
+			targetPosition[1] -= 1;
+		}
+		if (this.maps[targetPosition[0]] && this.maps[targetPosition[0]][targetPosition[1]]) {
+			return this.maps[targetPosition[0]][targetPosition[1]];
+		}
+		return false;
 	}
 	sendToEveryone(channel, action, data) {
 		this.io.to(channel).emit(action, data);
