@@ -16,6 +16,7 @@ class Map {
 			}
 		}
 		this.generateRandom();
+		this.id = "id" + Math.floor(Math.random() * 9999999999);
 	}
 	generateRandom() {
 		for (var i = 0; i < 15; i++) {

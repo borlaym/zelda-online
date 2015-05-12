@@ -63,14 +63,14 @@ class Player extends GameObject {
 	}
 	update(dt) {
 		super.update(dt);
-		var pickups = this.world.items;
-		for (var i = 0; i < pickups.length; i++) {
-			var pickupPosition = [pickups[i].position[0] - 3.5, pickups[i].position[1] - 4];
-			if (rectanglesOverlap(this.getWorldPosition(), pickupPosition, [16,16], [7, 8])) {
-				this.health = Math.min(3, this.health + 1);
-				pickups[i].destroy();
-			}
-		}
+		// var pickups = this.world.items;
+		// for (var i = 0; i < pickups.length; i++) {
+		// 	var pickupPosition = [pickups[i].position[0] - 3.5, pickups[i].position[1] - 4];
+		// 	if (rectanglesOverlap(this.getWorldPosition(), pickupPosition, [16,16], [7, 8])) {
+		// 		this.health = Math.min(3, this.health + 1);
+		// 		pickups[i].destroy();
+		// 	}
+		// }
 	}
 	heartbeat() {
 		this.lastHeartbeat = new Date().getTime();

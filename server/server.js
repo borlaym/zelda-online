@@ -7,7 +7,9 @@ app.use(cors());
 io.set("origins", "*:*");
 var World = require("./World.js");
 
-var world = new World();
+var world = new World({
+	io: io
+});
 
 io.on('connection', function(socket){
   console.log('a user connected with id ' + socket.id);

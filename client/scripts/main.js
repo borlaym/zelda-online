@@ -92,12 +92,13 @@ socket.on(Actions.INITIAL_STATE, function(data) {
             }
         }
     }
-    for (var i = 0; i < data.items.length; i++) {
-        pickups.push(new Pickup(data.items[i]));
-    }
+    // for (var i = 0; i < data.items.length; i++) {
+    //     pickups.push(new Pickup(data.items[i]));
+    // }
 });
 
 socket.on(Actions.OBJECT_UPDATE, function(data) {
+    console.log(data);
     var object = _.find(gameObjects, function(object) {
         return object.id === data.id;
     });

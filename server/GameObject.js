@@ -50,6 +50,7 @@ class GameObjectServerImplementation extends GameObject {
 		super(attributes);
 		this.events = new EventEmitter;
 		this.world = attributes.world;
+		this.map = attributes.map;
 		this.states = {
 			ALIVE: 1,
 			DEAD: 0
@@ -219,7 +220,7 @@ class GameObjectServerImplementation extends GameObject {
 	 */
 	checkCollisionWithWorldObjects(newPosition) {
 		var collision = false;
-		var map = this.world.map.objects;
+		var map = this.map.objects;
 
 		var checkPosition = [newPosition[0], newPosition[1]];
 
@@ -328,7 +329,7 @@ class GameObjectServerImplementation extends GameObject {
 	}
 
 	spawn() {
-		var respawnPoint = this.world.getEmptySpace();
+		var respawnPoint = this.map.getEmptySpace();
 		this.position = [respawnPoint[0] * 16 + 8, respawnPoint[1] * 16 + 16];
 		this.health = 3;
 		this.events.emit("change");
