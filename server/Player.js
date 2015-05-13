@@ -38,8 +38,10 @@ function rectanglesOverlap (rect1TopLeft, rect2TopLeft, rect1Dimensions, rect2Di
  */
 class Player extends GameObject {
 	constructor(attributes) {
+		attributes.type = ObjectTypes.PLAYER_LINK;
 		super(attributes);
 		this.socket = attributes.socket;
+		this.socket.player = this;
 		var self = this;
 		this.socket.on(Actions.JOIN, function(data) {
 			self.name = data.name;
@@ -59,7 +61,8 @@ class Player extends GameObject {
 	}
 	stopMoving() {
 		this.isMoving = false;
-		this.events.emit("change");
+		this.socket.to(this.room.id).emit(Actions.OBJECT_UPDATE, this.getState());
+		this.socket.emit(Actions.OBJECT_UPDATE, this.getState());
 	}
 	update(dt) {
 		super.update(dt);
@@ -73,23 +76,21 @@ class Player extends GameObject {
 		// }
 		// 
 		// 
-		
-		var map;
 
 		if ((this.position[0] <= 16 && this.direction === LEFT) ||
 			(this.position[0] >= 246 && this.direction === RIGHT) ||
 			(this.position[1] <= 16 && this.direction === UP) ||
 			(this.position[1] >= 166 && this.direction === DOWN))
 		{
-			map = this.world.getAdjacentMap(this.map, this.direction);
-			if (map) {
-				this.events.emit("map:transition", map)
+			var room = this.world.getAdjacentRoom(this.room, this.direction);
+			if (room) {
+				this.events.emit("room:transition", room)
 			}
 			
 		}
 	}
-	transitionToMap(map) {
-		this.map = map;
+	transitionToRoom(room) {
+		this.room = room;
 		switch(this.direction) {
 			case UP:
 				this.position[1] = 176;
@@ -115,7 +116,8 @@ class Player extends GameObject {
 			return;
 		}
 		this.isAttacking = true;
-		this.events.emit("change");
+		this.socket.to(this.room.id).emit(Actions.OBJECT_UPDATE, this.getState());
+		this.socket.emit(Actions.OBJECT_UPDATE, this.getState());
 
 		//Spawn sword object
 		this.spawnSword();
@@ -124,7 +126,8 @@ class Player extends GameObject {
 		var self = this;
 		setTimeout(function() {
 			self.isAttacking = false;
-			self.events.emit("change");
+			self.socket.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
+			self.socket.emit(Actions.OBJECT_UPDATE, self.getState());
 		}, 200);
 	}
 
@@ -163,7 +166,8 @@ class Player extends GameObject {
 
 		this.projectiles.push(sword);
 
-		this.events.emit("projectileSpawned", sword);
+		this.socket.to(this.room.id).emit(Actions.ADD_OBJECT, sword.getState());
+		this.socket.emit(Actions.ADD_OBJECT, sword.getState());
 
 	}
 
@@ -171,7 +175,39 @@ class Player extends GameObject {
 		this.projectiles = _.filter(function(item) {
 			return item !== swordInstance;
 		});
-		this.events.emit("projectileRemoved", swordInstance);
+		this.socket.to(this.room.id).emit(Actions.REMOVE_OBJECT, swordInstance.id);
+		this.socket.emit(Actions.REMOVE_OBJECT, swordInstance.id);
+		this.socket.emit(Actions.REMOVE_OBJECT, swordInstance.id);
+	}
+
+	spawn() {
+		var respawnPoint = this.room.getEmptySpace();
+		this.position = [respawnPoint[0] * 16 + 8, respawnPoint[1] * 16 + 16];
+		this.health = 3;
+		//Send my new spawn position to everyone in my room
+		this.socket.to(this.room.id).emit(Actions.OBJECT_UPDATE, this.getState());
+		this.socket.emit(Actions.OBJECT_UPDATE, this.getState());
+	}
+
+	/**
+	 * Enter a new room. Includes:
+	 * Remove from old room
+	 * Create in new Room
+	 * @return {[type]} [description]
+	 */
+	enterRoom(room) {
+		if (this.room) {
+			this.socket.broadcast.to(this.room.id).emit(Actions.REMOVE_OBJECT, this.id);
+			this.socket.leave(this.room.id);
+			this.room.players.delete(this);
+		}
+		this.room = room;
+		this.socket.join(this.room.id);
+		this.room.players.add(this);
+		//I get the initial state of the room
+		this.socket.emit(Actions.INITIAL_STATE, this.room.getState());
+		//The others see me appear
+		this.socket.broadcast.to(this.room.id).emit(Actions.ADD_OBJECT, this.getState());
 	}
 
 	getHit(projectile) {
@@ -192,6 +228,13 @@ class Player extends GameObject {
 			return;
 		}
 		super.getHit(projectile);
+	}
+	/**
+	 * Remove yourself from the server after a disconnect
+	 */
+	remove() {
+		this.socket.broadcast.to(this.room.id).emit(Actions.REMOVE_OBJECT, this.id);
+		this.room.players.delete(this);
 	}
 }
 

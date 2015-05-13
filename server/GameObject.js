@@ -1,5 +1,6 @@
 var GameObject = require("../shared/GameObject.js");
 var ObjectTypes = require("../shared/ObjectTypes.js");
+var Actions = require("../shared/Actions.js");
 var EventEmitter = require("events").EventEmitter;
 
 var UP = 0,
@@ -50,7 +51,7 @@ class GameObjectServerImplementation extends GameObject {
 		super(attributes);
 		this.events = new EventEmitter;
 		this.world = attributes.world;
-		this.map = attributes.map;
+		this.room = attributes.room;
 		this.states = {
 			ALIVE: 1,
 			DEAD: 0
@@ -82,12 +83,11 @@ class GameObjectServerImplementation extends GameObject {
 			var myPosition = this.getWorldPosition();
 			var self = this;
 			//Check for collision with projectiles
-			for (var key in this.world.players) {
-				if (key === this.id) {
+			for (let player in this.room.players) {
+				if (player === this) {
 					continue;
 				}
-				var otherPlayer = this.world.players[key];
-				otherPlayer.projectiles.forEach(function(projectile) {
+				player.projectiles.forEach(function(projectile) {
 					if (rectanglesOverlap(projectile.getWorldPosition(), myPosition)) {
 						self.getHit(projectile);
 					}
@@ -133,7 +133,7 @@ class GameObjectServerImplementation extends GameObject {
 		//If there was no collision with anything, we apply the new position to the player and emit a change event
 		if (!collision) {
 			this.position = newPosition;
-			this.events.emit("change");
+			this.world.io.to(this.room.id).emit(Actions.OBJECT_UPDATE, this.getState());
 		}
 	}
 
@@ -168,7 +168,7 @@ class GameObjectServerImplementation extends GameObject {
 		//If there was no collision with anything, we apply the new position to the player and emit a change event
 		if (!collision) {
 			this.position = newPosition;
-			this.events.emit("change");
+			this.world.io.to(this.room.id).emit(Actions.OBJECT_UPDATE, this.getState());
 		}
 	}
 	/**
@@ -200,11 +200,10 @@ class GameObjectServerImplementation extends GameObject {
 		}
 
 
-		for (var key in this.world.players) {
-			var otherPlayer = this.world.players[key];
-			if (otherPlayer.id !== this.id) {
-				var otherPlayerPosition = [otherPlayer.position[0] - 8, otherPlayer.position[1] - 16];
-				if ((pointIsInRectangle(otherPlayerPosition, checkPoint1) || pointIsInRectangle(otherPlayerPosition, checkPoint2)) && otherPlayer.state)  {
+		for (let player of this.room.players) {
+			if (player !== this) {
+				var playerPosition = [player.position[0] - 8, player.position[1] - 16];
+				if ((pointIsInRectangle(playerPosition, checkPoint1) || pointIsInRectangle(playerPosition, checkPoint2)) && player.state)  {
 					collision = true;
 				}
 			}
@@ -220,7 +219,7 @@ class GameObjectServerImplementation extends GameObject {
 	 */
 	checkCollisionWithWorldObjects(newPosition) {
 		var collision = false;
-		var map = this.map.objects;
+		var room = this.room.objects;
 
 		var checkPosition = [newPosition[0], newPosition[1]];
 
@@ -244,22 +243,22 @@ class GameObjectServerImplementation extends GameObject {
 		//Check if there is an object on the grid we are about to go to
 		var targetGrid = [Math.floor(checkPosition[0] / 16), Math.floor(checkPosition[1] / 16)];
 
-		if (targetGrid[0] >= map.length) {
+		if (targetGrid[0] >= room.length) {
 			collision = true;
 		}
 		if (targetGrid[0] < 0) {
 			collision = true;
 		}
-		if (targetGrid[1] >= map[0].length) {
+		if (targetGrid[1] >= room[0].length) {
 			collision = true;
 		}
 	 	if (targetGrid[1] < 0) {
 	 		collision = true;
 	 	}
 
-	 	if (!map[targetGrid[0]] || !map[targetGrid[0]][targetGrid[1]]) {
+	 	if (!room[targetGrid[0]] || !room[targetGrid[0]][targetGrid[1]]) {
 	 		collision = true;
-	 	} else if (!map[targetGrid[0]][targetGrid[1]].passable) {
+	 	} else if (!room[targetGrid[0]][targetGrid[1]].passable) {
 			collision = true;
 		}
 
@@ -269,7 +268,7 @@ class GameObjectServerImplementation extends GameObject {
 	/**
 	 * Creates an object representation that can be sent back via sockets
 	 */
-	getObject() {
+	getState() {
 		return {
 			id: this.id,
 			position: this.position,
@@ -299,7 +298,7 @@ class GameObjectServerImplementation extends GameObject {
 		this.isInvincible = true;
 		setTimeout(function() {
 			self.isInvincible = false;
-			self.events.emit("change");
+			self.world.io.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
 		}, 500);
 		
 		this.getKnockedBack({
@@ -308,7 +307,7 @@ class GameObjectServerImplementation extends GameObject {
 			duration: 300
 		});
 
-		this.events.emit("change");
+		self.world.io.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
 	}
 
 	/**
@@ -328,23 +327,18 @@ class GameObjectServerImplementation extends GameObject {
 
 	}
 
-	spawn() {
-		var respawnPoint = this.map.getEmptySpace();
-		this.position = [respawnPoint[0] * 16 + 8, respawnPoint[1] * 16 + 16];
-		this.health = 3;
-		this.events.emit("change");
-	}
+	
 
 	die() {
 		this.state = this.states.DEAD;
-		this.events.emit("change");
+		this.world.io.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
 
 		//respawn
 		var self = this;
 		setTimeout(function() {
 			self.state = self.states.ALIVE;
 			self.spawn();
-			self.events.emit("change");
+			self.world.io.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
 		}, 3000);
 	}
 
