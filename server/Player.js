@@ -84,7 +84,8 @@ class Player extends GameObject {
 		{
 			var room = this.world.getAdjacentRoom(this.room, this.direction);
 			if (room) {
-				this.events.emit("room:transition", room)
+				this.enterRoom(room);
+				this.transitionToRoom(room);
 			}
 			
 		}
@@ -105,7 +106,8 @@ class Player extends GameObject {
 				this.position[0] = 256;
 				break;
 		}
-		this.events.emit("change");
+		this.socket.to(this.room.id).emit(Actions.OBJECT_UPDATE, this.getState());
+		this.socket.emit(Actions.OBJECT_UPDATE, this.getState());
 	}
 	heartbeat() {
 		this.lastHeartbeat = new Date().getTime();
