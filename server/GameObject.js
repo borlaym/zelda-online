@@ -83,7 +83,7 @@ class GameObjectServerImplementation extends GameObject {
 			var myPosition = this.getWorldPosition();
 			var self = this;
 			//Check for collision with projectiles
-			for (let player in this.room.players) {
+			for (let player of this.room.players) {
 				if (player === this) {
 					continue;
 				}
@@ -331,7 +331,7 @@ class GameObjectServerImplementation extends GameObject {
 
 	die() {
 		this.state = this.states.DEAD;
-		this.world.io.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
+		this.world.io.to(this.room.id).emit(Actions.OBJECT_UPDATE, this.getState());
 
 		//respawn
 		var self = this;
