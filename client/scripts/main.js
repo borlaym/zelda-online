@@ -94,9 +94,10 @@ socket.on(Actions.INITIAL_STATE, function(data) {
             }
         }
     }
-    // for (var i = 0; i < data.items.length; i++) {
-    //     pickups.push(new Pickup(data.items[i]));
-    // }
+    pickups = [];
+    for (var i = 0; i < data.pickups.length; i++) {
+        pickups.push(new Pickup(data.pickups[i]));
+    }
 });
 
 socket.on(Actions.OBJECT_UPDATE, function(data) {

@@ -1,7 +1,6 @@
 var GameObject = require("./GameObject.js");
 var Actions = require("../shared/Actions.js");
 var Player = require("./Player.js");
-var Pickup = require("./Pickup.js");
 var Room = require("./Room.js");
 var ObjectTypes = require("../shared/ObjectTypes.js");
 
@@ -22,13 +21,13 @@ class World {
 			self.tick();
 		}, 1000/60);
 
-		// setInterval(function() {
-		// 	for (var i = 0; i < self.rooms.length; i++) {
-		// 		for (var j = 0; j < self.rooms[i].length; j++) {
-		// 			self.spawnRandomItem(self.rooms[i][j]);
-		// 		}
-		// 	}
-		// }, 20000);
+		setInterval(function() {
+			for (var i = 0; i < self.rooms.length; i++) {
+				for (var j = 0; j < self.rooms[i].length; j++) {
+					self.rooms[i][j].spawnRandomItem();
+				}
+			}
+		}, 20000);
 	}
 	/**
 	 * Generate n row of m columns of rooms
@@ -39,7 +38,8 @@ class World {
 			this.rooms.push([]);
 			for (var col = 0; col < 2; col++) {
 				this.rooms[row].push(new Room({
-					position: [row, col]
+					position: [row, col],
+					io: this.io
 				}));
 
 			}
@@ -106,18 +106,7 @@ class World {
 		}
 		return false;
 	}
-	// spawnRandomItem(map) {
-	// 	var self = this;
-	// 	if (this.items.length === 0) {
-	// 		var newItem = new Pickup(this);
-	// 		newItem.events.on("destroy", function() {
-	// 			self.items = [];
-	// 			self.sendToEveryone(map.id, Actions.REMOVE_PICKUP, newItem.getObject());
-	// 		});
-	// 		this.items.push(newItem);
-	// 		this.sendToEveryone(map.id, Actions.ADD_PICKUP, newItem.getObject());
-	// 	}
-	// }
+	
 }
 
 module.exports = World;

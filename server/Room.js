@@ -1,12 +1,16 @@
 var ObjectTypes = require("../shared/ObjectTypes.js");
 var WorldObject = require("../shared/WorldObject.js");
+var Pickup = require("./Pickup.js");
 var _ = require("lodash");
+var Actions = require("../shared/Actions.js");
 
 class Room {
 	constructor(attributes) {
 		this.position = attributes.position;
 		this.objects = [];
 		this.players = new Set();
+		this.pickups = [];
+		this.io = attributes.io;
 		for (var x = 0; x < 16; x++) {
 			this.objects.push([]);
 			for (var y = 0; y < 11; y++) {
@@ -35,7 +39,10 @@ class Room {
 			players: Array.from(this.players).map(function(player) {
 				return player.getState();
 			}),
-			objects: this.objects
+			objects: this.objects,
+			pickups: this.pickups.map(function(pickup) {
+				return pickup.getState();
+			})
 		};
 	}
 	tick(dt) {
@@ -50,6 +57,24 @@ class Room {
 				});
 			}
 		});
+	}
+	/**
+	 * Spawns a random pickup on an empty space in this room. Executes every n seconds.
+	 * There can only be one pickup present in a room at any one time
+	 */
+	spawnRandomItem() {
+
+		var self = this;
+		if (this.pickups.length === 0) {
+			var newItem = new Pickup(this);
+			newItem.events.on("destroy", function() {
+				self.pickups = [];
+				self.io.to(self.id).emit(Actions.REMOVE_PICKUP, newItem.getState());
+			});
+			this.pickups.push(newItem);
+			this.io.to(this.id).emit(Actions.ADD_PICKUP, newItem.getState());
+		}
+
 	}
 	getEmptySpace() {
 		var rndX, rndY, space;
