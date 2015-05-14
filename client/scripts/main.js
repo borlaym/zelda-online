@@ -24,7 +24,7 @@ loadAllSprites.then(function() {
 });
 
 var gameObjects = [];
-var map = [];
+var room = [];
 var pickups = [];
 var lastTick;
 
@@ -35,10 +35,10 @@ function tick() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (var i = 0; i < map.length; i++) {
-        for (var j = 0; j < map[i].length; j++) {
-            if (map[i][j]) {
-                map[i][j].draw(ctx);
+    for (var i = 0; i < room.length; i++) {
+        for (var j = 0; j < room[i].length; j++) {
+            if (room[i][j]) {
+                room[i][j].draw(ctx);
             }
         }
     }
@@ -70,6 +70,8 @@ socket.emit(Actions.JOIN, {
 
 socket.on(Actions.INITIAL_STATE, function(data) {
     window.playerID = socket.id;
+    gameObjects = [];
+    room = [];
     for (var i = 0; i < data.players.length; i++) {
         var newGameObject = new GameObject({
     		position: data.players[i].position,
@@ -82,18 +84,19 @@ socket.on(Actions.INITIAL_STATE, function(data) {
             window.myCharacter = newGameObject;
         }
     }
-    for (var i = 0; i < data.map.length; i++) {
-        map.push([]);
-        for (var j = 0; j < data.map[i].length; j++) {
-            if (data.map[i][j]) {
-                map[i].push(new WorldObject(data.map[i][j]));
+    for (var i = 0; i < data.objects.length; i++) {
+        room.push([]);
+        for (var j = 0; j < data.objects[i].length; j++) {
+            if (data.objects[i][j]) {
+                room[i].push(new WorldObject(data.objects[i][j]));
             } else {
-                map[i].push(false);
+                room[i].push(false);
             }
         }
     }
-    for (var i = 0; i < data.items.length; i++) {
-        pickups.push(new Pickup(data.items[i]));
+    pickups = [];
+    for (var i = 0; i < data.pickups.length; i++) {
+        pickups.push(new Pickup(data.pickups[i]));
     }
 });
 
@@ -113,6 +116,7 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
 });
 
 socket.on(Actions.ADD_OBJECT, function(data) {
+    console.log(data);
     gameObjects.push(new GameObject({
         type: data.type,
         position: data.position,

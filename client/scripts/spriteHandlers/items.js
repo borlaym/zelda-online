@@ -8,6 +8,7 @@ module.exports = {
 
 	sprites: {
 		[ObjectTypes.HEART]: [258, 123, 5, 5],
+		[ObjectTypes.HALF_HEART]: [264, 123, 5, 5],
 		[ObjectTypes.HEART_CONTAINER]: [244, 124, 7, 8]
 	},
 

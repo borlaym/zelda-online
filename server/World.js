@@ -1,102 +1,112 @@
 var GameObject = require("./GameObject.js");
 var Actions = require("../shared/Actions.js");
 var Player = require("./Player.js");
-var Pickup = require("./Pickup.js");
-var Map = require("../shared/Map.js");
+var Room = require("./Room.js");
 var ObjectTypes = require("../shared/ObjectTypes.js");
 
+var NORTH = 0,
+	EAST = 1,
+	SOUTH = 2,
+	WEST = 3;
+
+
 class World {
-	constructor() {
-		this.players = {};
-		this.ai = {};
+	constructor(attributes) {
 		var self = this;
-		self.lastTick = new Date().getTime();
+		this.io = attributes.io;
 		this.generateMap();
-		this.items = [];
+		
+		self.lastTick = new Date().getTime();
 		setInterval(function() {
 			self.tick();
 		}, 1000/60);
 
 		setInterval(function() {
-			self.spawnRandomItem();
+			for (var i = 0; i < self.rooms.length; i++) {
+				for (var j = 0; j < self.rooms[i].length; j++) {
+					self.rooms[i][j].spawnRandomItem();
+				}
+			}
 		}, 20000);
 	}
+	/**
+	 * Generate n row of m columns of rooms
+	 */
 	generateMap() {
-		this.map = new Map();
+		this.rooms = [];
+		for (var row = 0; row < 2; row++) {
+			this.rooms.push([]);
+			for (var col = 0; col < 2; col++) {
+				this.rooms[row].push(new Room({
+					position: [row, col],
+					io: this.io
+				}));
+
+			}
+		}
 	}
+	/**
+	 * Get a Room instance from the rooms array by its id
+	 */
+	getRoomByID(id) {
+		for (var row = 0; row < this.rooms.length; row++) {
+			for (var col = 0; col < this.rooms[row].length; col++) {
+				if (this.rooms[row][col].id === id) {
+					return this.rooms[row][col]
+				}
+			}
+		}
+	}
+	/**
+	 * Add a player to the game and spawn him in the top left room
+	 * Identified by his socket
+	 */
 	addPlayer(socket) {
 		var player = new Player({
 			socket: socket,
 			id: socket.id,
 			world: this,
-			type: ObjectTypes.PLAYER_LINK,
-			health: 3
+			health: 3,
+			room: this.rooms[0][0]
 		});
+		player.enterRoom(player.room);
 		player.spawn();
-		player.events.on("change", data => this.sendToEveryone(Actions.OBJECT_UPDATE, player.getObject()));
-		player.events.on("projectileSpawned", projectile => this.sendToEveryone(Actions.ADD_OBJECT, projectile.getObject()));
-		player.events.on("projectileRemoved", projectile => this.sendToEveryone(Actions.REMOVE_OBJECT, projectile.id));
-		player.events.on("projectile:change", projectile => this.sendToEveryone(Actions.OBJECT_UPDATE, projectile.getObject()));
-		this.players[socket.id] = player;
-		player.socket.emit(Actions.INITIAL_STATE, this.getState());
-		player.socket.broadcast.emit(Actions.ADD_OBJECT, player.getObject());
 	}
 	removePlayer(socket) {
-		this.sendToEveryone(Actions.REMOVE_OBJECT, socket.id);
-		delete this.players[socket.id];
+		socket.player.remove();
 	}
 	tick() {
 		var now = new Date().getTime();
 		var dt = now - this.lastTick;
 		this.lastTick = now;
-		for (var key in this.players) {
-			var player = this.players[key];
-			if (now - player.lastHeartbeat > 5000) {
-				this.removePlayer(player.socket);
-			} else {
-				player.update(dt);
-				//Update the player's projectiles
-				player.projectiles.forEach(function(projectile) {
-					projectile.update(dt);
-				});
+
+		for (var i = 0; i < this.rooms.length; i++) {
+			for (var j = 0; j < this.rooms[i].length; j++) {
+				this.rooms[i][j].tick(dt);
 			}
 		}
 	}
-	getEmptySpace() {
-		return this.map.getEmptySpace();
-	}
-	getState() {
-		var state = {
-			players: [],
-			map: {},
-			items: []
-		};
-		for (var key in this.players) {
-			state.players.push(this.players[key].getObject());
+	getAdjacentRoom(room, direction) {
+		var targetPosition = [room.position[0], room.position[1]];
+
+		if (direction === NORTH) {
+			targetPosition[0] -= 1;
 		}
-		state.items = this.items.map(function(item) {
-			return item.getObject();
-		});
-		state.map = this.map.getState();
-		return state;
-	}
-	sendToEveryone(action, data) {
-		for (var key in this.players) {
-			this.players[key].socket.emit(action, data);
+		if (direction === EAST) {
+			targetPosition[1] += 1;
 		}
-	}
-	spawnRandomItem() {
-		var self = this;
-		if (this.items.length === 0) {
-			var newItem = new Pickup(this);
-			newItem.events.on("destroy", function() {
-				self.items = [];
-				self.sendToEveryone(Actions.REMOVE_PICKUP, newItem.getObject());
-			});
-			this.items.push(newItem);
-			this.sendToEveryone(Actions.ADD_PICKUP, newItem.getObject());
+		if (direction === SOUTH) {
+			targetPosition[0] += 1;
 		}
+		if (direction === WEST) {
+			targetPosition[1] -= 1;
+		}
+		if (this.rooms[targetPosition[0]] && this.rooms[targetPosition[0]][targetPosition[1]]) {
+			return this.rooms[targetPosition[0]][targetPosition[1]];
+		}
+		return false;
 	}
+	
 }
 
 module.exports = World;

@@ -12,7 +12,7 @@ class GameObject {
 		attributes = attributes || {};
 		this.id = attributes.id;
 		this.type = attributes.type;
-		this.direction = attributes.direction || UP;
+		this.direction = typeof attributes.direction !== "undefined" ? attributes.direction : DOWN;
 		this.position = attributes.position || [32, 32];
 		this.isMoving = false;
 		this.speed = 50;

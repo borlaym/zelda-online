@@ -104,7 +104,8 @@ class GameObjectClientImplementation extends GameObject {
 			namePlate.style.top = (this.position[1] - 24) + "px";
 
 			//Show health
-			for (var i = 0; i < this.health; i++) {
+			var fullHearts = Math.floor(this.health);
+			for (var i = 0; i < fullHearts; i++) {
 				ctx.drawImage(itemHandler.image,
 								itemHandler.sprites[ObjectTypes.HEART][0],
 								itemHandler.sprites[ObjectTypes.HEART][1],
@@ -114,6 +115,18 @@ class GameObjectClientImplementation extends GameObject {
 								this.position[1] + 1,
 								itemHandler.sprites[ObjectTypes.HEART][2],
 								itemHandler.sprites[ObjectTypes.HEART][3]
+					)
+			}
+			if (this.health - fullHearts) {
+				ctx.drawImage(itemHandler.image,
+								itemHandler.sprites[ObjectTypes.HALF_HEART][0],
+								itemHandler.sprites[ObjectTypes.HALF_HEART][1],
+								itemHandler.sprites[ObjectTypes.HALF_HEART][2],
+								itemHandler.sprites[ObjectTypes.HALF_HEART][3],
+								this.position[0] - 9 + (i * (itemHandler.sprites[ObjectTypes.HALF_HEART][2] + 1)),
+								this.position[1] + 1,
+								itemHandler.sprites[ObjectTypes.HALF_HEART][2],
+								itemHandler.sprites[ObjectTypes.HALF_HEART][3]
 					)
 			}
 		}

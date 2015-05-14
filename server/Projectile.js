@@ -1,4 +1,5 @@
 var GameObject = require("./GameObject");
+var Actions = require("../shared/Actions.js");
 
 var UP = 0,
 	RIGHT = 1,
@@ -40,7 +41,8 @@ class Projectile extends GameObject {
 			}
 
 			this.position = swordPosition;
-			this.owner.events.emit("projectile:change", this);
+			this.owner.socket.to(this.owner.room.id).emit(Actions.OBJECT_UPDATE, this.getState());
+			this.owner.socket.emit(Actions.OBJECT_UPDATE, this.getState());
 		} else {
 			super.update(dt);
 		}
