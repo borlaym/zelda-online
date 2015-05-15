@@ -243,19 +243,6 @@ class GameObjectServerImplementation extends GameObject {
 		//Check if there is an object on the grid we are about to go to
 		var targetGrid = [Math.floor(checkPosition[0] / 16), Math.floor(checkPosition[1] / 16)];
 
-		if (targetGrid[0] >= room.length) {
-			collision = true;
-		}
-		if (targetGrid[0] < 0) {
-			collision = true;
-		}
-		if (targetGrid[1] >= room[0].length) {
-			collision = true;
-		}
-	 	if (targetGrid[1] < 0) {
-	 		collision = true;
-	 	}
-
 	 	if (!room[targetGrid[0]] || !room[targetGrid[0]][targetGrid[1]]) {
 	 		collision = true;
 	 	} else if (!room[targetGrid[0]][targetGrid[1]].passable) {

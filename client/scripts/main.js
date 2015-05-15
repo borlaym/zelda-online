@@ -9,6 +9,7 @@ var GameObject = require("./GameObject.js");
 var Pickup = require("./Pickup.js");
 var WorldObject = require("./WorldObject.js");
 var keyHandler = require("./keyHandler.js");
+var worldSprites = require("./spriteHandlers/overWorld.js");
 
 var css = require("../styles/main.css");
 
@@ -34,6 +35,18 @@ function tick() {
     lastTick = now;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(worldSprites.image,
+                    worldSprites.roomSprite[0],
+                    worldSprites.roomSprite[1],
+                    worldSprites.roomSprite[2],
+                    worldSprites.roomSprite[3],
+                    8,
+                    8,
+                    worldSprites.roomSprite[2],
+                    worldSprites.roomSprite[3]
+                    );
 
     for (var i = 0; i < room.length; i++) {
         for (var j = 0; j < room[i].length; j++) {

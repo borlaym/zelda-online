@@ -10,5 +10,6 @@ module.exports = keymirror({
 	"FOREST": null,
 	"HEART": null,
 	"HALF_HEART": null,
-	"HEART_CONTAINER": null
+	"HEART_CONTAINER": null,
+	"INVISBLE_WALL": null
 });
