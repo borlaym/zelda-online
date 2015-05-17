@@ -45,6 +45,9 @@ function tick() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    //Draw base toom image
+
     ctx.drawImage(worldSprites.image,
                     worldSprites.roomSprite[0],
                     worldSprites.roomSprite[1],
@@ -56,6 +59,8 @@ function tick() {
                     worldSprites.roomSprite[3]
                     );
 
+    //Draw world objects
+
     for (var i = 0; i < room.length; i++) {
         for (var j = 0; j < room[i].length; j++) {
             if (room[i][j]) {
@@ -64,18 +69,146 @@ function tick() {
         }
     }
 
+    //Draw pickups
+
     for (var i = 0; i < pickups.length; i++) {
         pickups[i].draw(ctx);
     }
 
+    //Draw doors below the player
+    if (room[0]) {
+        //NORTH
+        if (room[8][0].passable) {
+            ctx.drawImage(worldSprites.image,
+                            worldSprites.sprites.DOOR_NORTH[0],
+                            worldSprites.sprites.DOOR_NORTH[1],
+                            worldSprites.sprites.DOOR_NORTH[2],
+                            worldSprites.sprites.DOOR_NORTH[3],
+                            7.5 * 16,
+                            12,
+                            worldSprites.sprites.DOOR_NORTH[2],
+                            worldSprites.sprites.DOOR_NORTH[3]
+                            );
+        }
+        //EAST
+        if (room[15][5].passable) {
+            ctx.drawImage(worldSprites.image,
+                            worldSprites.sprites.DOOR_EAST[0],
+                            worldSprites.sprites.DOOR_EAST[1],
+                            worldSprites.sprites.DOOR_EAST[2],
+                            worldSprites.sprites.DOOR_EAST[3],
+                            14 * 16,
+                            4.5 * 16,
+                            worldSprites.sprites.DOOR_EAST[2],
+                            worldSprites.sprites.DOOR_EAST[3]
+                            );
+        }
+        //SOUTH
+        if (room[8][10].passable) {
+            ctx.drawImage(worldSprites.image,
+                            worldSprites.sprites.DOOR_SOUTH[0],
+                            worldSprites.sprites.DOOR_SOUTH[1],
+                            worldSprites.sprites.DOOR_SOUTH[2],
+                            worldSprites.sprites.DOOR_SOUTH[3],
+                            7.5 * 16,
+                            9 * 16,
+                            worldSprites.sprites.DOOR_SOUTH[2],
+                            worldSprites.sprites.DOOR_SOUTH[3]
+                            );
+        }
+        //WEST
+        if (room[0][5].passable) {
+            ctx.drawImage(worldSprites.image,
+                            worldSprites.sprites.DOOR_WEST[0],
+                            worldSprites.sprites.DOOR_WEST[1],
+                            worldSprites.sprites.DOOR_WEST[2],
+                            worldSprites.sprites.DOOR_WEST[3],
+                            12,
+                            4.5 * 16,
+                            worldSprites.sprites.DOOR_WEST[2],
+                            worldSprites.sprites.DOOR_WEST[3]
+                            );
+        }
+        
+    }
+
+    //Draw players and other game objects
 
     for (var i = 0; i < gameObjects.length; i++) {
         gameObjects[i].update(dt);
         gameObjects[i].draw(ctx);
     }
 
-    requestAnimationFrame(tick);
+    //Draw doors Above the player
+    if (room[0]) {
+        //NORTH
+        if (room[8][0].passable) {
+            ctx.drawImage(worldSprites.image,
+                            worldSprites.sprites.DOOR_NORTH2[0],
+                            worldSprites.sprites.DOOR_NORTH2[1],
+                            worldSprites.sprites.DOOR_NORTH2[2],
+                            worldSprites.sprites.DOOR_NORTH2[3],
+                            7.5 * 16,
+                            12,
+                            worldSprites.sprites.DOOR_NORTH2[2],
+                            worldSprites.sprites.DOOR_NORTH2[3]
+                            );
+        }
+        //EAST
+        if (room[15][5].passable) {
+            ctx.drawImage(worldSprites.image,
+                            worldSprites.sprites.DOOR_EAST2[0],
+                            worldSprites.sprites.DOOR_EAST2[1],
+                            worldSprites.sprites.DOOR_EAST2[2],
+                            worldSprites.sprites.DOOR_EAST2[3],
+                            14 * 16,
+                            4.5 * 16,
+                            worldSprites.sprites.DOOR_EAST2[2],
+                            worldSprites.sprites.DOOR_EAST2[3]
+                            );
+        }
+        //SOUTH
+        if (room[8][10].passable) {
+            ctx.drawImage(worldSprites.image,
+                            worldSprites.sprites.DOOR_SOUTH2[0],
+                            worldSprites.sprites.DOOR_SOUTH2[1],
+                            worldSprites.sprites.DOOR_SOUTH2[2],
+                            worldSprites.sprites.DOOR_SOUTH2[3],
+                            7.5 * 16,
+                            9 * 16,
+                            worldSprites.sprites.DOOR_SOUTH2[2],
+                            worldSprites.sprites.DOOR_SOUTH2[3]
+                            );
+        }
+        //WEST
+        if (room[0][5].passable) {
+            ctx.drawImage(worldSprites.image,
+                            worldSprites.sprites.DOOR_WEST2[0],
+                            worldSprites.sprites.DOOR_WEST2[1],
+                            worldSprites.sprites.DOOR_WEST2[2],
+                            worldSprites.sprites.DOOR_WEST2[3],
+                            12,
+                            4.5 * 16,
+                            worldSprites.sprites.DOOR_WEST2[2],
+                            worldSprites.sprites.DOOR_WEST2[3]
+                            );
+        }
+        
+    }
+
+    //Draw the walls beetween rooms
+    ctx.drawImage(worldSprites.image, 0, 0, 8, 8, 0, 0, 8, 8);
+    var pattern = ctx.createPattern(worldSprites.getWallPattern(), "repeat");
+    ctx.fillStyle = pattern;
+    ctx.rect(0,0, canvas.width, 8);
+    ctx.rect(248,0, 8, canvas.height);
+    ctx.rect(0,168, canvas.width, 8);
+    ctx.rect(0,0, 8, canvas.height);
+    ctx.fill();
+
+
     outputctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, outputCanvas.width, outputCanvas.height);
+    requestAnimationFrame(tick);
 }
 
 var name = localStorage.getItem("name") || window.prompt("Name: ");
@@ -105,7 +238,6 @@ socket.on(Actions.INITIAL_STATE, function(data) {
             window.myCharacter = newGameObject;
         }
     }
-    console.log(data.objects);
     for (var i = 0; i < data.objects.length; i++) {
         room.push([]);
         for (var j = 0; j < data.objects[i].length; j++) {
@@ -116,11 +248,11 @@ socket.on(Actions.INITIAL_STATE, function(data) {
             }
         }
     }
+    console.log(room);
     pickups = [];
     for (var i = 0; i < data.pickups.length; i++) {
         pickups.push(new Pickup(data.pickups[i]));
     }
-    console.log(pickups);
 });
 
 socket.on(Actions.OBJECT_UPDATE, function(data) {

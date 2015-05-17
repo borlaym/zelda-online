@@ -34,15 +34,21 @@ class World {
 	 */
 	generateMap() {
 		this.rooms = [];
-		for (var row = 0; row < 2; row++) {
+		for (var x = 0; x < 2; x++) {
 			this.rooms.push([]);
-			for (var col = 0; col < 2; col++) {
-				this.rooms[row].push(new Room({
-					position: [row, col],
+			for (var y = 0; y < 2; y++) {
+				this.rooms[x].push(new Room({
+					position: [x, y],
 					io: this.io,
 					world: this
 				}));
 
+			}
+		}
+		//Once all rooms are in place, generate a layout for each one
+		for (var x = 0; x < this.rooms.length; x++) {
+			for (var y = 0; y < this.rooms[x].length; y++) {
+				this.rooms[x][y].generateRandomLayout();
 			}
 		}
 	}
@@ -91,16 +97,16 @@ class World {
 		var targetPosition = [room.position[0], room.position[1]];
 
 		if (direction === NORTH) {
-			targetPosition[0] -= 1;
+			targetPosition[1] -= 1;
 		}
 		if (direction === EAST) {
-			targetPosition[1] += 1;
-		}
-		if (direction === SOUTH) {
 			targetPosition[0] += 1;
 		}
+		if (direction === SOUTH) {
+			targetPosition[1] += 1;
+		}
 		if (direction === WEST) {
-			targetPosition[1] -= 1;
+			targetPosition[0] -= 1;
 		}
 		if (this.rooms[targetPosition[0]] && this.rooms[targetPosition[0]][targetPosition[1]]) {
 			return this.rooms[targetPosition[0]][targetPosition[1]];
