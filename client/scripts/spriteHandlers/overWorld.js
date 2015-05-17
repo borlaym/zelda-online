@@ -7,16 +7,18 @@ module.exports = {
 	ORIGIN: [0, 0],
 
 	sprites: {
-		[ObjectTypes.TREE]: [120, 18],
-		[ObjectTypes.FLOOR_DIRT]: [35, 1]
+		[ObjectTypes.TREE]: [261, 129],
+		[ObjectTypes.FLOOR_DIRT]: [242, 148]
 	},
+
+	roomSprite: [0, 12, 240, 160],
 
 	load: function() {
 		var self = this;
 		return new Promise(function(success, failure) {
 			self.image = new Image();
 			self.image.onload = success;
-			self.image.src = "images/spritesheets/zelda-sprites-overworld.png"
+			self.image.src = "images/spritesheets/dungeon-tiles.gif"
 		});
 		
 	}

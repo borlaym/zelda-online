@@ -7,7 +7,7 @@ class Pickup {
 		this.type = ObjectTypes.HEART_CONTAINER;
 		this.events = new EventEmitter;
 		var space = this.room.getEmptySpace();
-		this.position = [space[0] * 16 + 8, space[1] + 8];
+		this.position = [space[0] * 16 + 8, space[1] * 16 + 8];
 	}
 	getState() {
 		return {

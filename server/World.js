@@ -39,7 +39,8 @@ class World {
 			for (var col = 0; col < 2; col++) {
 				this.rooms[row].push(new Room({
 					position: [row, col],
-					io: this.io
+					io: this.io,
+					world: this
 				}));
 
 			}

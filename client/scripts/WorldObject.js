@@ -7,6 +7,9 @@ class WorldObjectClientImplementation extends WorldObject {
 		return spriteHandler.sprites[this.type];
 	}
 	draw(ctx) {
+		if (this.type === ObjectTypes.FLOOR_DIRT || this.type === ObjectTypes.INVISIBLE_WALL) {
+			return;
+		}
 		var drawPosition = this.getPosition();
 		ctx.drawImage(spriteHandler.image, 
 						this.getSprite()[0], 
