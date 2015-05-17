@@ -11,5 +11,5 @@ module.exports = keymirror({
 	"HEART": null,
 	"HALF_HEART": null,
 	"HEART_CONTAINER": null,
-	"INVISBLE_WALL": null
+	"INVISIBLE_WALL": null
 });

@@ -1,19 +1,14 @@
 .container {
-  width: 256px;
-  height: 176px;
-  
-  transform: scale(3);
-  -webkit-transform: scale(3);
-  transform-origin: 0 0;
-  -webkit-transform-origin: 0 0;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: pixelated;
+  margin: 20px auto;
+  width: 768px;
+  height: 528px;
+  position: relative;
 }
 
 canvas {
 	display: block;
-	width: 256px;
-  	height: 176px;
   	border: 1px solid black;
 }
 
@@ -26,17 +21,22 @@ canvas {
 	text-align: center;
 	color: white;
 	font-family: 'VT323';
-	font-size: 6px;
-	width: 300px;
-	margin-left: -150px;
+	font-size: 18px;
+	width: 100px;
+	margin-left: -50px;
 	text-transform: uppercase;
 }
 
 .ms {
-	position: absolute;
-	top: 0px;
-	right: -60px;
 	font-family: 'VT323';
-	font-size: 10px;
+	font-size: 20px;
 	text-align: left;
+	text-align: center;
+}
+
+.instructions {
+	font-family: 'VT323';
+	font-size: 20px;
+	text-align: left;
+	text-align: center;
 }

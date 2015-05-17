@@ -11,6 +11,7 @@ class Room {
 		this.players = new Set();
 		this.pickups = [];
 		this.io = attributes.io;
+		this.world = attributes.world;
 		for (var x = 0; x < 16; x++) {
 			this.objects.push([]);
 			for (var y = 0; y < 11; y++) {
@@ -25,7 +26,8 @@ class Room {
 		this.id = "id" + Math.floor(Math.random() * 9999999999);
 	}
 	generateRandomLayout() {
-		for (var i = 0; i < 15; i++) {
+		//Randomly spawn objects inside the room
+		for (var i = 0; i < 10; i++) {
 			var x = Math.floor(Math.random() * 12 + 2);
 			var y = Math.floor(Math.random() * 7 + 2);
 			this.objects[x][y] = new WorldObject({
@@ -33,6 +35,7 @@ class Room {
 				coordinates: [x, y]
 			});
 		}
+		//Place invisible walls on the outside of the rooms
 		for (var i = 0; i < 16; i++) {
 			for (var j = 0; j < 11; j++) {
 				if (i < 2 || i > 13 || j < 2 || j > 8) {
@@ -42,6 +45,12 @@ class Room {
 						coordinates: [i, j]
 					});
 				}
+			}
+		}
+		//Place doors
+		for (var direction = 0; direction < 4; direction++) {
+			if (this.world.getAdjacentRoom(this, direction)) {
+				
 			}
 		}
 	}

@@ -14,8 +14,16 @@ var worldSprites = require("./spriteHandlers/overWorld.js");
 var css = require("../styles/main.css");
 
 
-var canvas = document.querySelector("canvas");
+var canvas = document.createElement("canvas");
+canvas.width = 256;
+canvas.height = 176;
 var ctx = canvas.getContext("2d");
+var outputCanvas = document.querySelector("canvas");
+var outputctx = outputCanvas.getContext("2d");
+outputctx.mozImageSmoothingEnabled = false;
+ outputctx.webkitImageSmoothingEnabled = false;
+ outputctx.msImageSmoothingEnabled = false;
+ outputctx.imageSmoothingEnabled = false;
 
 
 loadAllSprites.then(function() {
@@ -67,7 +75,7 @@ function tick() {
     }
 
     requestAnimationFrame(tick);
-
+    outputctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, outputCanvas.width, outputCanvas.height);
 }
 
 var name = localStorage.getItem("name") || window.prompt("Name: ");
@@ -97,6 +105,7 @@ socket.on(Actions.INITIAL_STATE, function(data) {
             window.myCharacter = newGameObject;
         }
     }
+    console.log(data.objects);
     for (var i = 0; i < data.objects.length; i++) {
         room.push([]);
         for (var j = 0; j < data.objects[i].length; j++) {
@@ -111,6 +120,7 @@ socket.on(Actions.INITIAL_STATE, function(data) {
     for (var i = 0; i < data.pickups.length; i++) {
         pickups.push(new Pickup(data.pickups[i]));
     }
+    console.log(pickups);
 });
 
 socket.on(Actions.OBJECT_UPDATE, function(data) {
@@ -129,7 +139,6 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
 });
 
 socket.on(Actions.ADD_OBJECT, function(data) {
-    console.log(data);
     gameObjects.push(new GameObject({
         type: data.type,
         position: data.position,

@@ -89,6 +89,7 @@ class GameObjectClientImplementation extends GameObject {
 
 		//Show name and health if it's a player
 		if (this.type === ObjectTypes.PLAYER_LINK && this.name) {
+
 			//Show nameplate
 			var namePlate = document.getElementById(this.id);
 
@@ -100,8 +101,8 @@ class GameObjectClientImplementation extends GameObject {
 				document.getElementById("container").appendChild(namePlate);
 			}
 
-			namePlate.style.left = (this.position[0]) + "px";
-			namePlate.style.top = (this.position[1] - 24) + "px";
+			namePlate.style.left = (this.position[0] * 3) + "px";
+			namePlate.style.top = (this.position[1]) * 3 - 70 + "px";
 
 			//Show health
 			var fullHearts = Math.floor(this.health);
