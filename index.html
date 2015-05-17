@@ -9,21 +9,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style type="text/css">
 .container {
-  width: 256px;
-  height: 176px;
-  
-  transform: scale(3);
-  -webkit-transform: scale(3);
-  transform-origin: 0 0;
-  -webkit-transform-origin: 0 0;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: pixelated;
+  margin: 20px auto;
+  width: 768px;
+  height: 528px;
+  position: relative;
 }
 
 canvas {
   display: block;
-  width: 256px;
-    height: 176px;
     border: 1px solid black;
 }
 
@@ -36,26 +31,36 @@ canvas {
   text-align: center;
   color: white;
   font-family: 'VT323';
-  font-size: 6px;
-  width: 300px;
-  margin-left: -150px;
+  font-size: 18px;
+  width: 100px;
+  margin-left: -50px;
   text-transform: uppercase;
 }
 
 .ms {
-  position: absolute;
-  top: 0px;
-  right: -60px;
   font-family: 'VT323';
-  font-size: 10px;
+  font-size: 20px;
   text-align: left;
+  text-align: center;
+}
+
+.instructions {
+  font-family: 'VT323';
+  font-size: 20px;
+  text-align: left;
+  text-align: center;
 }
   </style>
 </head>
 <body>
-  <div class="container" id="container">
+  <a href="https://github.com/borlaym/zelda-online"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<div class="container" id="container">
+    <canvas width=768 height=528></canvas>
     <div class="ms" id="ms"></div>
-    <canvas width=256 height=176></canvas>
+  </div>
+  <div class="instructions">
+    Move with WASD, attack with O!
+
   </div>
   <!--[if lt IE 8]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
