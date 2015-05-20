@@ -221,27 +221,41 @@ class GameObjectServerImplementation extends GameObject {
 		var collision = false;
 		var room = this.room.objects;
 
-		var checkPosition = [newPosition[0], newPosition[1]];
+		var checkPoint1, checkPoint2;
 
 		var directionToCheck = this.isMovingInvoluntarily ? this.knockback.direction : this.direction;
 
 		//Modify the point we check against based where we are facing
 		if (directionToCheck === UP) {
-			checkPosition[1] -= 8;
+			checkPoint1 = [newPosition[0] - 7, newPosition[1] - 7];
+			checkPoint2 = [newPosition[0] + 7, newPosition[1] - 7];
 		}
 
 		if (directionToCheck === RIGHT) {
-			checkPosition[0] += 8;
-			checkPosition[1] -= 8;
+			checkPoint1 = [newPosition[0] + 7, newPosition[1] - 7];
+			checkPoint2 = [newPosition[0] + 7, newPosition[1]];
+		}
+
+		if (directionToCheck === DOWN) {
+			checkPoint1 = [newPosition[0] + 7, newPosition[1]];
+			checkPoint2 = [newPosition[0] - 7, newPosition[1]];
 		}
 
 		if (directionToCheck === LEFT) {
-			checkPosition[0] -= 8;
-			checkPosition[1] -= 8;
+			checkPoint1 = [newPosition[0] - 7, newPosition[1] - 7];
+			checkPoint2 = [newPosition[0] - 7, newPosition[1]];
 		}
 
 		//Check if there is an object on the grid we are about to go to
-		var targetGrid = [Math.floor(checkPosition[0] / 16), Math.floor(checkPosition[1] / 16)];
+		var targetGrid = [Math.floor(checkPoint1[0] / 16), Math.floor(checkPoint1[1] / 16)];
+
+	 	if (!room[targetGrid[0]] || !room[targetGrid[0]][targetGrid[1]]) {
+	 		collision = true;
+	 	} else if (!room[targetGrid[0]][targetGrid[1]].passable) {
+			collision = true;
+		}
+
+		var targetGrid = [Math.floor(checkPoint2[0] / 16), Math.floor(checkPoint2[1] / 16)];
 
 	 	if (!room[targetGrid[0]] || !room[targetGrid[0]][targetGrid[1]]) {
 	 		collision = true;
