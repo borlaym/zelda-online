@@ -197,14 +197,7 @@ function tick() {
     }
 
     //Draw the walls beetween rooms
-    ctx.drawImage(worldSprites.image, 0, 0, 8, 8, 0, 0, 8, 8);
-    var pattern = ctx.createPattern(worldSprites.getWallPattern(), "repeat");
-    ctx.fillStyle = pattern;
-    ctx.rect(0,0, canvas.width, 8);
-    ctx.rect(248,0, 8, canvas.height);
-    ctx.rect(0,168, canvas.width, 8);
-    ctx.rect(0,0, 8, canvas.height);
-    ctx.fill();
+
 
 
     outputctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, outputCanvas.width, outputCanvas.height);
@@ -248,7 +241,6 @@ socket.on(Actions.INITIAL_STATE, function(data) {
             }
         }
     }
-    console.log(room);
     pickups = [];
     for (var i = 0; i < data.pickups.length; i++) {
         pickups.push(new Pickup(data.pickups[i]));

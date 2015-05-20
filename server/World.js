@@ -34,9 +34,9 @@ class World {
 	 */
 	generateMap() {
 		this.rooms = [];
-		for (var x = 0; x < 2; x++) {
+		for (var x = 0; x < 3; x++) {
 			this.rooms.push([]);
-			for (var y = 0; y < 2; y++) {
+			for (var y = 0; y < 3; y++) {
 				this.rooms[x].push(new Room({
 					position: [x, y],
 					io: this.io,
