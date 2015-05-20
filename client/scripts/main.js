@@ -294,6 +294,19 @@ socket.on(Actions.HEARTBEAT, function() {
     document.getElementById("ms").innerHTML = "Latency: " + ms + "ms";
 });
 
+socket.on(Actions.LEADERBOARD_CHANGE, function(leaderboard) {
+    var ul = document.getElementById("leaderboard");
+    var str = "";
+    leaderboard.forEach(function(player) {
+        if (player.name) {
+            str += "<li>" + player.name + ": " + player.score + "</li>";
+        }
+    });
+    ul.innerHTML = str;
+
+    console.log(leaderboard);
+});
+
 var lastHeartBeat = 0;
 
 setInterval(function() {

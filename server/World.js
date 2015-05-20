@@ -3,6 +3,7 @@ var Actions = require("../shared/Actions.js");
 var Player = require("./Player.js");
 var Room = require("./Room.js");
 var ObjectTypes = require("../shared/ObjectTypes.js");
+var _ = require("lodash");
 
 var NORTH = 0,
 	EAST = 1,
@@ -15,6 +16,8 @@ class World {
 		var self = this;
 		this.io = attributes.io;
 		this.generateMap();
+
+		this.leaderboard = {};
 		
 		self.lastTick = new Date().getTime();
 		setInterval(function() {
@@ -78,9 +81,20 @@ class World {
 		});
 		player.enterRoom(player.room);
 		player.spawn();
+		
+		//Managing player scores
+		var self = this;
+		player.events.on("pointchange", function(amount) {
+			self.leaderboard[player.id] += amount;
+			self.leaderboardChange();
+		});
+		this.leaderboard[player.id] = 0;
+		this.leaderboardChange();
 	}
 	removePlayer(socket) {
 		socket.player.remove();
+		delete this.leaderboard[socket.id];
+		this.leaderboardChange();
 	}
 	tick() {
 		var now = new Date().getTime();
@@ -93,6 +107,12 @@ class World {
 			}
 		}
 	}
+	/**
+	 * Checks if there is a room adjacent to the given one in a direction. Returns false or the room.
+	 * @param  {[type]} room      [description]
+	 * @param  {[type]} direction [description]
+	 * @return {[type]}           [description]
+	 */
 	getAdjacentRoom(room, direction) {
 		var targetPosition = [room.position[0], room.position[1]];
 
@@ -112,6 +132,28 @@ class World {
 			return this.rooms[targetPosition[0]][targetPosition[1]];
 		}
 		return false;
+	}
+	/**
+	 * Returns a sorted array of players and their scores
+	 * @return {Array}
+	 */
+	getLeaderboard() {
+		var values = [];
+		for (var key in this.leaderboard) {
+			values.push({
+				name : this.io.sockets.connected[key].player.name,
+				score: this.leaderboard[key]
+			});
+		}
+		return _.sortBy(values, function(player) {
+			return player.score;
+		}).reverse();
+	}
+	/**
+	 * Called every time a player's score changes
+	 */
+	leaderboardChange() {
+		this.io.emit(Actions.LEADERBOARD_CHANGE, this.getLeaderboard());
 	}
 	
 }

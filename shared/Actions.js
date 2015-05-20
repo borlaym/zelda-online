@@ -12,5 +12,6 @@ module.exports = keymirror({
 	"HEARTBEAT": null,
 	"ATTACK": null,
 	"HIT": null,
-	"JOIN": null
+	"JOIN": null,
+	"LEADERBOARD_CHANGE": null
 });

@@ -238,6 +238,9 @@ class Player extends GameObject {
 		this.socket.broadcast.to(this.room.id).emit(Actions.REMOVE_OBJECT, this.id);
 		this.room.players.delete(this);
 	}
+	addPoints(amount) {
+		this.events.emit("pointchange", amount);
+	}
 }
 
 module.exports = Player;
