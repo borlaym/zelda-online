@@ -66,11 +66,18 @@ class Player extends GameObject {
 	}
 	update(dt) {
 		super.update(dt);
+
+		//Check if the player is colliding with a pickup
 		var pickups = this.room.pickups;
 		for (var i = 0; i < pickups.length; i++) {
 			var pickupPosition = [pickups[i].position[0] - 3.5, pickups[i].position[1] - 4];
 			if (rectanglesOverlap(this.getWorldPosition(), pickupPosition, [16,16], [7, 8])) {
-				this.health = Math.min(3, this.health + 1);
+				if (pickups[i].type === ObjectTypes.HEART_CONTAINER) {
+					this.health = Math.min(3, this.health + 1);
+				}
+				if (pickups[i].type === ObjectTypes.RUPEE) {
+					this.addPoints(1);
+				}
 				pickups[i].destroy();
 			}
 		}
@@ -240,6 +247,9 @@ class Player extends GameObject {
 	}
 	addPoints(amount) {
 		this.events.emit("pointchange", amount);
+	}
+	takePointsFrom(from) {
+		this.events.emit("takepointsfrom", from);
 	}
 }
 

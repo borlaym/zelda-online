@@ -30,7 +30,7 @@ class World {
 					self.rooms[i][j].spawnRandomItem();
 				}
 			}
-		}, 20000);
+		}, 3000);
 	}
 	/**
 	 * Generate n row of m columns of rooms
@@ -86,6 +86,11 @@ class World {
 		var self = this;
 		player.events.on("pointchange", function(amount) {
 			self.leaderboard[player.id] += amount;
+			self.leaderboardChange();
+		});
+		player.events.on("takepointsfrom", function(from) {
+			self.leaderboard[player.id] += self.leaderboard[from.id];
+			self.leaderboard[from.id] = 0;
 			self.leaderboardChange();
 		});
 		this.leaderboard[player.id] = 0;

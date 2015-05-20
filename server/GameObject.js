@@ -293,7 +293,7 @@ class GameObjectServerImplementation extends GameObject {
 		this.health = this.health - projectile.damage;
 		if (this.health <= 0) {
 			this.die();
-			projectile.owner.addPoints(1);
+			projectile.owner.takePointsFrom(this);
 			return;
 		}
 		//Can't be hit again for a short time
