@@ -9,7 +9,8 @@ module.exports = {
 	sprites: {
 		[ObjectTypes.HEART]: [258, 123, 5, 5],
 		[ObjectTypes.HALF_HEART]: [264, 123, 5, 5],
-		[ObjectTypes.HEART_CONTAINER]: [244, 124, 7, 8]
+		[ObjectTypes.HEART_CONTAINER]: [244, 124, 7, 8],
+		[ObjectTypes.RUPEE]: [164, 120, 8, 16]
 	},
 
 	load: function() {

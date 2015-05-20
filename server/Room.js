@@ -22,7 +22,6 @@ class Room {
 				}));
 			}
 		}
-		this.generateRandomLayout();
 		this.id = "id" + Math.floor(Math.random() * 9999999999);
 	}
 	generateRandomLayout() {
@@ -48,10 +47,36 @@ class Room {
 			}
 		}
 		//Place doors
+		var doors = []
 		for (var direction = 0; direction < 4; direction++) {
 			if (this.world.getAdjacentRoom(this, direction)) {
-				
+				switch(direction) {
+					case 0:
+						doors.push([8,0]);
+						doors.push([8,1]);
+					break;
+					case 1:
+						doors.push([15,5]);
+						doors.push([14,5]);
+					break;
+					case 2:
+						doors.push([8,10]);
+						doors.push([8,9]);
+					break;
+					case 3:
+						doors.push([0,5]);
+						doors.push([1,5]);
+					break;
+				}
 			}
+		}
+		console.log(this.position, doors);
+		for (var i = 0; i < doors.length; i++) {
+			this.objects[doors[i][0]][doors[i][1]] = new WorldObject({
+				type: ObjectTypes.FLOOR_DIRT,
+				passable: true,
+				coordinates:  [doors[i][0], doors[i][1]]
+			});
 		}
 	}
 	getState() {
