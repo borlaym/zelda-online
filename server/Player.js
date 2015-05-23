@@ -52,6 +52,7 @@ class Player extends GameObject {
 		this.lastHeartbeat = new Date().getTime();
 		this.socket.on(Actions.HEARTBEAT, this.heartbeat.bind(this));
 		this.projectiles = [];
+		this.rupees = 0;
 	}
 	startMoving(data) {
 		if (!this.isMovingInvoluntarily && !this.isAttacking && this.state) {

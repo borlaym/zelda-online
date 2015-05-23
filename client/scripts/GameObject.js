@@ -130,6 +130,7 @@ class GameObjectClientImplementation extends GameObject {
 								itemHandler.sprites[ObjectTypes.HALF_HEART][3]
 					)
 			}
+
 		}
 	}
 

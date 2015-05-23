@@ -280,7 +280,8 @@ class GameObjectServerImplementation extends GameObject {
 			isInvincible: this.isInvincible,
 			name: this.name,
 			state: this.state,
-			health: this.health
+			health: this.health,
+			rupees: this.rupees
 		}
 	}
 	/**

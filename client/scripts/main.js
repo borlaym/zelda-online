@@ -14,6 +14,7 @@ var UI = require("./UI.js");
 
 var css = require("../styles/main.css");
 
+
 var $ = require("zepto-browserify").$;
 
 
@@ -283,6 +284,12 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
             $(".roomCover").hide();
             $(".namePlate").hide();
         }
+
+        //Update the number of current rupees
+        UI.updateRupees(data.rupees);
+
+        //Update the number of heart containers
+        UI.updateLife(data.health)
     }
 
 });

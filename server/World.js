@@ -94,7 +94,7 @@ class World {
 		});
 		//Send the player the world map layout
 		player.socket.emit(Actions.MAP_LAYOUT, this.getMapLayout());
-		
+
 		player.enterRoom(player.room);
 		player.spawn();
 
@@ -104,12 +104,18 @@ class World {
 		player.events.on("pointchange", function(amount) {
 			self.leaderboard[player.id] += amount;
 			self.leaderboardChange();
+			player.rupees = self.leaderboard[player.id];
+			player.socket.emit(player.getState());
 		});
 		player.events.on("takepointsfrom", function(from) {
 			var amount = Math.ceil(self.leaderboard[from.id] / 2);
 			self.leaderboard[player.id] += amount;
 			self.leaderboard[from.id] -= amount;
 			self.leaderboardChange();
+			player.rupees = self.leaderboard[player.id];
+			from.rupees = self.leaderboard[from.id];
+			player.socket.emit(player.getState());
+			from.socket.emit(from.getState());
 		});
 		this.leaderboard[player.id] = 0;
 		this.leaderboardChange();
