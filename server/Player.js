@@ -52,6 +52,8 @@ class Player extends GameObject {
 		this.lastHeartbeat = new Date().getTime();
 		this.socket.on(Actions.HEARTBEAT, this.heartbeat.bind(this));
 		this.projectiles = [];
+		this.swordType = 0.5;
+		this.rupees = 0;
 	}
 	startMoving(data) {
 		if (!this.isMovingInvoluntarily && !this.isAttacking && this.state) {
@@ -77,6 +79,9 @@ class Player extends GameObject {
 				}
 				if (pickups[i].type === ObjectTypes.RUPEE) {
 					this.addPoints(1);
+				}
+				if (pickups[i].type === ObjectTypes.MASTER_SWORD) {
+					this.swordType = 1;
 				}
 				pickups[i].destroy();
 			}
@@ -121,7 +126,7 @@ class Player extends GameObject {
 		this.socket.emit(Actions.HEARTBEAT);
 	}
 	attack() {
-		if (this.projectiles.length !== 0) {
+		if (this.projectiles.length !== 0 || this.state === 0) {
 			return;
 		}
 		this.isAttacking = true;
@@ -160,7 +165,7 @@ class Player extends GameObject {
 		}
 
 		var sword = new Projectile({
-			type: ObjectTypes.SWORD,
+			type: this.swordType === 0.5 ? ObjectTypes.SWORD : ObjectTypes.MASTER_SWORD,
 			direction: this.direction,
 			position: swordPosition,
 			isMoving: false,
@@ -169,7 +174,7 @@ class Player extends GameObject {
 			duration: 200,
 			owner: this,
 			id: this.id + "sword",
-			damage: 0.5,
+			damage: this.swordType,
 			world: this.world
 		});
 
@@ -237,6 +242,10 @@ class Player extends GameObject {
 			return;
 		}
 		super.getHit(projectile);
+	}
+	die() {
+		this.swordType = 0.5;
+		super.die();
 	}
 	/**
 	 * Remove yourself from the server after a disconnect

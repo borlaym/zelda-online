@@ -26,6 +26,7 @@ class GameObjectClientImplementation extends GameObject {
 				this.spriteHandler = linkSpriteHandler;
 				break;
 			case ObjectTypes.SWORD:
+			case ObjectTypes.MASTER_SWORD:
 				this.spriteHandler = projectileHandler;
 				break;
 		}
@@ -102,7 +103,7 @@ class GameObjectClientImplementation extends GameObject {
 			}
 
 			namePlate.style.left = (this.position[0] * 3) + "px";
-			namePlate.style.top = (this.position[1]) * 3 - 70 + "px";
+			namePlate.style.top = (this.position[1]) * 3 - 70 + 110 + "px";
 
 			//Show health
 			var fullHearts = Math.floor(this.health);
@@ -130,6 +131,7 @@ class GameObjectClientImplementation extends GameObject {
 								itemHandler.sprites[ObjectTypes.HALF_HEART][3]
 					)
 			}
+
 		}
 	}
 

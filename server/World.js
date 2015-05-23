@@ -30,7 +30,7 @@ class World {
 					self.rooms[i][j].spawnRandomItem();
 				}
 			}
-		}, 15000);
+		}, 20000);
 	}
 	/**
 	 * Generate n row of m columns of rooms
@@ -56,6 +56,19 @@ class World {
 		}
 	}
 	/**
+	 * Return a simplified layout of the game map
+	 */
+	getMapLayout() {
+		var layout = [];
+		for (var x = 0; x < this.rooms.length; x++) {
+			layout.push([])
+			for (var y = 0; y < this.rooms[x].length; y++) {
+				layout[x].push(true);
+			}
+		}
+		return layout;
+	}
+	/**
 	 * Get a Room instance from the rooms array by its id
 	 */
 	getRoomByID(id) {
@@ -79,19 +92,30 @@ class World {
 			health: 3,
 			room: this.rooms[0][0]
 		});
+		//Send the player the world map layout
+		player.socket.emit(Actions.MAP_LAYOUT, this.getMapLayout());
+
 		player.enterRoom(player.room);
 		player.spawn();
+
 		
 		//Managing player scores
 		var self = this;
 		player.events.on("pointchange", function(amount) {
 			self.leaderboard[player.id] += amount;
 			self.leaderboardChange();
+			player.rupees = self.leaderboard[player.id];
+			player.socket.emit(player.getState());
 		});
 		player.events.on("takepointsfrom", function(from) {
-			self.leaderboard[player.id] += self.leaderboard[from.id];
-			self.leaderboard[from.id] = 0;
+			var amount = Math.ceil(self.leaderboard[from.id] / 2);
+			self.leaderboard[player.id] += amount;
+			self.leaderboard[from.id] -= amount;
 			self.leaderboardChange();
+			player.rupees = self.leaderboard[player.id];
+			from.rupees = self.leaderboard[from.id];
+			player.socket.emit(player.getState());
+			from.socket.emit(from.getState());
 		});
 		this.leaderboard[player.id] = 0;
 		this.leaderboardChange();

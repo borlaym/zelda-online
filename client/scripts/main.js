@@ -10,8 +10,12 @@ var Pickup = require("./Pickup.js");
 var WorldObject = require("./WorldObject.js");
 var keyHandler = require("./keyHandler.js");
 var worldSprites = require("./spriteHandlers/overWorld.js");
+var UI = require("./UI.js");
 
 var css = require("../styles/main.css");
+
+
+var $ = require("zepto-browserify").$;
 
 
 var canvas = document.createElement("canvas");
@@ -46,7 +50,7 @@ function tick() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    //Draw base toom image
+    //Draw base room image
 
     ctx.drawImage(worldSprites.image,
                     worldSprites.roomSprite[0],
@@ -140,7 +144,7 @@ function tick() {
     }
 
     //Draw doors Above the player
-    if (room[0]) {
+    if (room[0] && window.deathState) {
         //NORTH
         if (room[8][0].passable) {
             ctx.drawImage(worldSprites.image,
@@ -196,10 +200,7 @@ function tick() {
         
     }
 
-    //Draw the walls beetween rooms
-
-
-
+    //Scale to the large canvas
     outputctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, outputCanvas.width, outputCanvas.height);
     requestAnimationFrame(tick);
 }
@@ -215,7 +216,15 @@ socket.emit(Actions.JOIN, {
     name: name
 });
 
+
+socket.on(Actions.MAP_LAYOUT, function(data) {
+    console.log("MAP LAYOUT")
+    UI.drawMap(data);
+});
+
 socket.on(Actions.INITIAL_STATE, function(data) {
+    console.log("ROOM STATE");
+    $(".namePlate").remove();
     window.playerID = socket.id;
     gameObjects = [];
     room = [];
@@ -245,6 +254,9 @@ socket.on(Actions.INITIAL_STATE, function(data) {
     for (var i = 0; i < data.pickups.length; i++) {
         pickups.push(new Pickup(data.pickups[i]));
     }
+
+    //Indicate the current room we are in
+    UI.currentRoom(data.roomPosition);
 });
 
 socket.on(Actions.OBJECT_UPDATE, function(data) {
@@ -260,9 +272,33 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);
 
+    //Do some other stuff if the updated object is the local player
+    //Set the deathState, so drawings can reflect on it
+    if (object.id === window.playerID) {
+        window.deathState = data.state;
+        //During player death, don't show the outer walls
+        if (data.state) {
+            $(".roomCover").show();
+            $(".namePlate").show();
+        } else {
+            $(".roomCover").hide();
+            $(".namePlate").hide();
+        }
+
+        //Update the number of current rupees
+        UI.updateRupees(data.rupees);
+
+        //Update the number of heart containers
+        UI.updateLife(data.health);
+
+        //Update the held sword
+        UI.updateSword(data.sword);
+    }
+
 });
 
 socket.on(Actions.ADD_OBJECT, function(data) {
+    console.log(data.type);
     gameObjects.push(new GameObject({
         type: data.type,
         position: data.position,
@@ -295,6 +331,7 @@ socket.on(Actions.HEARTBEAT, function() {
 });
 
 socket.on(Actions.LEADERBOARD_CHANGE, function(leaderboard) {
+    leaderboard = leaderboard.slice(0, 3);
     var ul = document.getElementById("leaderboard");
     var str = "";
     leaderboard.forEach(function(player) {

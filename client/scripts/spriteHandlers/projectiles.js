@@ -20,6 +20,20 @@ module.exports = {
 			[ //LEFT,
 				[16, 0]
 			]
+		],
+		[ObjectTypes.MASTER_SWORD]: [
+			[//UP,
+				[32, 19], 
+			],
+			[ //RIGHT
+				[48, 19]
+			],
+			[ //DOWN,
+				[0, 19],
+			],
+			[ //LEFT,
+				[16, 19]
+			]
 		]
 	},
 
