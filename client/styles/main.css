@@ -65,11 +65,49 @@
 	box-sizing: border-box;
 	float: left;
 	height: 110px;
-	width: 150px;
+	width: 100px;
 	padding-top: 10px;
 	color: white;
 	font-family: 'pixel_emulatorregular';
 	font-size: 22px;
+}
+
+.statusBar .equipment {
+	float: left;
+	height: 110px;
+	padding-top: 10px;
+	box-sizing: border-box;
+}
+
+.statusBar .equipment .B, .statusBar .equipment .A {
+	float: left;
+	margin-right: 12px;
+	width: 36px;
+	height: 52px;
+	background: url(../images/container.png);
+	position: relative;
+}
+
+.statusBar .equipment .B:after {
+	content: "B";
+	position: absolute;
+	color: white;
+	top: -7px;
+	left: 12px;
+	display: inline-block;
+	background: black;
+	font-family: 'pixel_emulatorregular';
+}
+
+.statusBar .equipment .A:after {
+	content: "A";
+	position: absolute;
+	color: white;
+	top: -7px;
+	left: 12px;
+	display: inline-block;
+	background: black;
+	font-family: 'pixel_emulatorregular';
 }
 
 .statusBar .life {
@@ -82,6 +120,24 @@
 	font-size: 22px;
 	text-align: center;
 	font-family: 'pixel_emulatorregular';
+}
+
+.sword {
+	width: 14px;
+	height: 32px;
+	background: url(../images/wooden_sword.png);
+	position: absolute;
+	top: 13px;
+	left: 11px;
+}
+
+.masterSword {
+	width: 14px;
+	height: 32px;
+	background: url(../images/master_sword.png);
+	position: absolute;
+	top: 13px;
+	left: 11px;
 }
 
 .statusBar .life .containers {

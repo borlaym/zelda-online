@@ -26,6 +26,7 @@ class GameObjectClientImplementation extends GameObject {
 				this.spriteHandler = linkSpriteHandler;
 				break;
 			case ObjectTypes.SWORD:
+			case ObjectTypes.MASTER_SWORD:
 				this.spriteHandler = projectileHandler;
 				break;
 		}

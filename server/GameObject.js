@@ -281,7 +281,8 @@ class GameObjectServerImplementation extends GameObject {
 			name: this.name,
 			state: this.state,
 			health: this.health,
-			rupees: this.rupees
+			rupees: this.rupees,
+			sword: this.swordType
 		}
 	}
 	/**

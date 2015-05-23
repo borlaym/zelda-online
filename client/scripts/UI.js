@@ -35,5 +35,17 @@ module.exports = {
 		for (var i = 0; i < emptyContainers; i++) {
 			$(".life .containers").append("<img src='images/heart_empty.png'>");
 		}
+	},
+	swordType : 0,
+	updateSword: function(type) {
+		if (type === this.swordType) {
+			return;
+		}
+		if (type === 1) {
+			$(".equipment .A").html("<div class='masterSword'></div>");
+		} else {
+			$(".equipment .A").html("<div class='sword'></div>");
+		}
+		this.swordType = type;
 	}
 }

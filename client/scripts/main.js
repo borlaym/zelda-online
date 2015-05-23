@@ -289,12 +289,16 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
         UI.updateRupees(data.rupees);
 
         //Update the number of heart containers
-        UI.updateLife(data.health)
+        UI.updateLife(data.health);
+
+        //Update the held sword
+        UI.updateSword(data.sword);
     }
 
 });
 
 socket.on(Actions.ADD_OBJECT, function(data) {
+    console.log(data.type);
     gameObjects.push(new GameObject({
         type: data.type,
         position: data.position,

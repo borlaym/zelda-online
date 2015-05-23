@@ -30,7 +30,7 @@ class World {
 					self.rooms[i][j].spawnRandomItem();
 				}
 			}
-		}, 15000);
+		}, 20000);
 	}
 	/**
 	 * Generate n row of m columns of rooms
