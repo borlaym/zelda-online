@@ -121,7 +121,7 @@ class Player extends GameObject {
 		this.socket.emit(Actions.HEARTBEAT);
 	}
 	attack() {
-		if (this.projectiles.length !== 0) {
+		if (this.projectiles.length !== 0 || this.state === 0) {
 			return;
 		}
 		this.isAttacking = true;

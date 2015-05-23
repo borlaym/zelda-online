@@ -13,6 +13,8 @@ var worldSprites = require("./spriteHandlers/overWorld.js");
 
 var css = require("../styles/main.css");
 
+var $ = require("zepto-browserify").$;
+
 
 var canvas = document.createElement("canvas");
 canvas.width = 256;
@@ -46,7 +48,7 @@ function tick() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    //Draw base toom image
+    //Draw base room image
 
     ctx.drawImage(worldSprites.image,
                     worldSprites.roomSprite[0],
@@ -140,7 +142,7 @@ function tick() {
     }
 
     //Draw doors Above the player
-    if (room[0]) {
+    if (room[0] && window.deathState) {
         //NORTH
         if (room[8][0].passable) {
             ctx.drawImage(worldSprites.image,
@@ -196,10 +198,7 @@ function tick() {
         
     }
 
-    //Draw the walls beetween rooms
-
-
-
+    //Scale to the large canvas
     outputctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, outputCanvas.width, outputCanvas.height);
     requestAnimationFrame(tick);
 }
@@ -216,6 +215,7 @@ socket.emit(Actions.JOIN, {
 });
 
 socket.on(Actions.INITIAL_STATE, function(data) {
+    $(".namePlate").remove();
     window.playerID = socket.id;
     gameObjects = [];
     room = [];
@@ -259,6 +259,20 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
     object.state = data.state;
     object.setAttacking(data.isAttacking);
     object.setDirection(data.direction);
+
+    //Do some other stuff if the updated object is the local player
+    //Set the deathState, so drawings can reflect on it
+    if (object.id === window.playerID) {
+        window.deathState = data.state;
+        //During player death, don't show the outer walls
+        if (data.state) {
+            $(".roomCover").show();
+            $(".namePlate").show();
+        } else {
+            $(".roomCover").hide();
+            $(".namePlate").hide();
+        }
+    }
 
 });
 

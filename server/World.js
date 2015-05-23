@@ -89,8 +89,9 @@ class World {
 			self.leaderboardChange();
 		});
 		player.events.on("takepointsfrom", function(from) {
-			self.leaderboard[player.id] += self.leaderboard[from.id];
-			self.leaderboard[from.id] = 0;
+			var amount = Math.ceil(self.leaderboard[from.id] / 2);
+			self.leaderboard[player.id] += amount;
+			self.leaderboard[from.id] -= amount;
 			self.leaderboardChange();
 		});
 		this.leaderboard[player.id] = 0;

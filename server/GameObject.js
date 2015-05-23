@@ -227,23 +227,23 @@ class GameObjectServerImplementation extends GameObject {
 
 		//Modify the point we check against based where we are facing
 		if (directionToCheck === UP) {
-			checkPoint1 = [newPosition[0] - 7, newPosition[1] - 7];
-			checkPoint2 = [newPosition[0] + 7, newPosition[1] - 7];
+			checkPoint1 = [newPosition[0] - 5, newPosition[1] - 5];
+			checkPoint2 = [newPosition[0] + 5, newPosition[1] - 5];
 		}
 
 		if (directionToCheck === RIGHT) {
-			checkPoint1 = [newPosition[0] + 7, newPosition[1] - 7];
-			checkPoint2 = [newPosition[0] + 7, newPosition[1]];
+			checkPoint1 = [newPosition[0] + 5, newPosition[1] - 5];
+			checkPoint2 = [newPosition[0] + 5, newPosition[1]];
 		}
 
 		if (directionToCheck === DOWN) {
-			checkPoint1 = [newPosition[0] + 7, newPosition[1]];
-			checkPoint2 = [newPosition[0] - 7, newPosition[1]];
+			checkPoint1 = [newPosition[0] + 5, newPosition[1]];
+			checkPoint2 = [newPosition[0] - 5, newPosition[1]];
 		}
 
 		if (directionToCheck === LEFT) {
-			checkPoint1 = [newPosition[0] - 7, newPosition[1] - 7];
-			checkPoint2 = [newPosition[0] - 7, newPosition[1]];
+			checkPoint1 = [newPosition[0] - 5, newPosition[1] - 5];
+			checkPoint2 = [newPosition[0] - 5, newPosition[1]];
 		}
 
 		//Check if there is an object on the grid we are about to go to
