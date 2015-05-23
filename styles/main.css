@@ -1,0 +1,219 @@
+
+@font-face {
+    font-family: 'pixel_emulatorregular';
+    src: url('fonts/pixel_emulator-webfont.eot');
+    src: url('fonts/pixel_emulator-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/pixel_emulator-webfont.woff2') format('woff2'),
+         url('fonts/pixel_emulator-webfont.woff') format('woff'),
+         url('fonts/pixel_emulator-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+.container {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+  margin: 20px auto;
+  width: 768px;
+  height: 638px;
+  position: relative;
+}
+
+
+.statusBar {
+	background: black;
+	width: 100%;
+	height: 110px;
+	z-index: 20;
+	position: relative;
+}
+
+.statusBar .map {
+	float: left;
+	width: 172px;
+	height: 110px;
+}
+
+.statusBar table {
+	margin: 0 auto;
+	margin-top: 30px;
+}
+
+.statusBar .map td {
+	background: #4240ff;
+	margin: 1px;
+	width: 14px;
+	height: 6px;
+	position: relative;
+}
+
+.statusBar .map td.current:after {
+	content: "";
+	display: block;
+	width: 6px;
+	height: 6px;
+	background: #88d800;
+	top: 0px;
+	position: absolute;
+	left: 4px;
+}
+
+.statusBar .consumables {
+	box-sizing: border-box;
+	float: left;
+	height: 110px;
+	width: 100px;
+	padding-top: 10px;
+	color: white;
+	font-family: 'pixel_emulatorregular';
+	font-size: 22px;
+}
+
+.statusBar .equipment {
+	float: left;
+	height: 110px;
+	padding-top: 10px;
+	box-sizing: border-box;
+}
+
+.statusBar .equipment .B, .statusBar .equipment .A {
+	float: left;
+	margin-right: 12px;
+	width: 36px;
+	height: 52px;
+	background: url(../images/container.png);
+	position: relative;
+}
+
+.statusBar .equipment .B:after {
+	content: "B";
+	position: absolute;
+	color: white;
+	top: -7px;
+	left: 12px;
+	display: inline-block;
+	background: black;
+	font-family: 'pixel_emulatorregular';
+}
+
+.statusBar .equipment .A:after {
+	content: "A";
+	position: absolute;
+	color: white;
+	top: -7px;
+	left: 12px;
+	display: inline-block;
+	background: black;
+	font-family: 'pixel_emulatorregular';
+}
+
+.statusBar .life {
+	float: left;
+	height: 110px;
+	width: 150px;
+	padding-top: 10px;
+	box-sizing: border-box;
+	color: #b53120;
+	font-size: 22px;
+	text-align: center;
+	font-family: 'pixel_emulatorregular';
+}
+
+.sword {
+	width: 14px;
+	height: 32px;
+	background: url(../images/wooden_sword.png);
+	position: absolute;
+	top: 13px;
+	left: 11px;
+}
+
+.masterSword {
+	width: 14px;
+	height: 32px;
+	background: url(../images/master_sword.png);
+	position: absolute;
+	top: 13px;
+	left: 11px;
+}
+
+.statusBar .life .containers {
+	text-align: left;
+}
+
+.statusBar .life .containers img {
+	margin-right: 1px;
+}
+
+.statusBar .leaderboard {
+	float: left;
+	margin-left: 20px;
+	height: 110px;
+	padding-top: 10px;
+	box-sizing: border-box;
+	color: white;
+	font-size: 22px;
+	text-align: left;
+	font-family: 'pixel_emulatorregular';
+}
+
+.statusBar .leaderboard ol {
+	margin: 0;
+}
+
+.statusBar .leaderboard p {
+	margin: 0;
+}
+
+canvas {
+	display: block;
+  	border: 1px solid black;
+}
+
+
+.namePlate {
+	display: inline-block;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	text-align: center;
+	color: white;
+	font-family: 'pixel_emulatorregular';
+	font-size: 14px;
+	width: 100px;
+	margin-left: -50px;
+	text-transform: uppercase;
+	z-index: 10;
+}
+
+.ms {
+	font-family: 'pixel_emulatorregular';
+	font-size: 20px;
+	text-align: left;
+	text-align: center;
+}
+
+.instructions {
+	font-family: 'pixel_emulatorregular';
+	font-size: 20px;
+	text-align: left;
+	text-align: center;
+}
+
+.roomCover {
+	position: absolute;
+	top: 110px;
+	left: 0px;
+	z-index: 20;
+}
+
+h1 {
+	font-family: 'pixel_emulatorregular';
+}
+
+li {
+	font-family: 'pixel_emulatorregular';
+}
