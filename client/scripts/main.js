@@ -327,6 +327,7 @@ socket.on(Actions.HEARTBEAT, function() {
 });
 
 socket.on(Actions.LEADERBOARD_CHANGE, function(leaderboard) {
+    leaderboard = leaderboard.slice(0, 3);
     var ul = document.getElementById("leaderboard");
     var str = "";
     leaderboard.forEach(function(player) {
