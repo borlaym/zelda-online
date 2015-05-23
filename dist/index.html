@@ -1,29 +1,48 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title></title>
-  <link rel="stylesheet" type="text/css" href="styles/main.css">
-  <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-</head>
-<body>
-  <div class="container" id="container">
-    <canvas width=768 height=528></canvas>
-    <div class="ms" id="ms"></div>
-    <img src="images/roomCover.png" class="roomCover">
-  </div>
-  <div class="instructions">
-    Move with WASD, attack with O!
 
-  </div>
-  <h1>LEADERBOARD</h1>
-  <ol id="leaderboard"></ol>
-  <!--[if lt IE 8]>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="statusBar">
+            <div class="map"></div>
+            <div class="consumables">
+                <div class="rupees">
+                    <img src="images/rupee.png">x<span class='amount'>0</span>
+                </div>
+            </div>
+            <div class="equipment">
+                <div class="B"></div>
+                <div class="A"></div>
+            </div>
+            <div class="life">
+                <label>- LIFE -</label>
+                <div class="containers"></div>
+            </div>
+            <div class="leaderboard">
+                <p>LEADERBOARD</p>
+                <ol id="leaderboard"></ol>
+            </div>
+        </div>
+        <canvas width=768 height=528></canvas>
+        <div class="ms" id="ms"></div>
+        <img src="images/roomCover.png" class="roomCover" id="roomCover">
+    </div>
+    <div class="instructions">
+        Move with WASD, attack with O!
+    </div>
+    <!--[if lt IE 8]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
-  <script type="text/javascript" src="assets/main.js"></script>
+    <script type="text/javascript" src="assets/main.js"></script>
 </body>
+
 </html>
