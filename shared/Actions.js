@@ -13,5 +13,6 @@ module.exports = keymirror({
 	"ATTACK": null,
 	"HIT": null,
 	"JOIN": null,
-	"LEADERBOARD_CHANGE": null
+	"LEADERBOARD_CHANGE": null,
+	"MAP_LAYOUT": null
 });

@@ -102,7 +102,7 @@ class GameObjectClientImplementation extends GameObject {
 			}
 
 			namePlate.style.left = (this.position[0] * 3) + "px";
-			namePlate.style.top = (this.position[1]) * 3 - 70 + "px";
+			namePlate.style.top = (this.position[1]) * 3 - 70 + 110 + "px";
 
 			//Show health
 			var fullHearts = Math.floor(this.health);

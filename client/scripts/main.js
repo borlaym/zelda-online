@@ -10,6 +10,7 @@ var Pickup = require("./Pickup.js");
 var WorldObject = require("./WorldObject.js");
 var keyHandler = require("./keyHandler.js");
 var worldSprites = require("./spriteHandlers/overWorld.js");
+var UI = require("./UI.js");
 
 var css = require("../styles/main.css");
 
@@ -214,7 +215,14 @@ socket.emit(Actions.JOIN, {
     name: name
 });
 
+
+socket.on(Actions.MAP_LAYOUT, function(data) {
+    console.log("MAP LAYOUT")
+    UI.drawMap(data);
+});
+
 socket.on(Actions.INITIAL_STATE, function(data) {
+    console.log("ROOM STATE");
     $(".namePlate").remove();
     window.playerID = socket.id;
     gameObjects = [];
@@ -245,6 +253,9 @@ socket.on(Actions.INITIAL_STATE, function(data) {
     for (var i = 0; i < data.pickups.length; i++) {
         pickups.push(new Pickup(data.pickups[i]));
     }
+
+    //Indicate the current room we are in
+    UI.currentRoom(data.roomPosition);
 });
 
 socket.on(Actions.OBJECT_UPDATE, function(data) {

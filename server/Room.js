@@ -87,7 +87,8 @@ class Room {
 			objects: this.objects,
 			pickups: this.pickups.map(function(pickup) {
 				return pickup.getState();
-			})
+			}),
+			roomPosition: this.position
 		};
 	}
 	tick(dt) {

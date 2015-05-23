@@ -56,6 +56,19 @@ class World {
 		}
 	}
 	/**
+	 * Return a simplified layout of the game map
+	 */
+	getMapLayout() {
+		var layout = [];
+		for (var x = 0; x < this.rooms.length; x++) {
+			layout.push([])
+			for (var y = 0; y < this.rooms[x].length; y++) {
+				layout[x].push(true);
+			}
+		}
+		return layout;
+	}
+	/**
 	 * Get a Room instance from the rooms array by its id
 	 */
 	getRoomByID(id) {
@@ -79,8 +92,12 @@ class World {
 			health: 3,
 			room: this.rooms[0][0]
 		});
+		//Send the player the world map layout
+		player.socket.emit(Actions.MAP_LAYOUT, this.getMapLayout());
+		
 		player.enterRoom(player.room);
 		player.spawn();
+
 		
 		//Managing player scores
 		var self = this;
