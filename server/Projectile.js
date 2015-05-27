@@ -87,6 +87,30 @@ class Projectile extends GameObject {
 			return;
 		}
 
+		var x = this.position[0] - player.position[0];
+		var y = this.position[1] - player.position[1];
+
+		var direction = 0;
+		if (x > 0 && y > 0) {
+			direction = Math.abs(y) > Math.abs(x) ? 0 : 3;
+		}
+		if (x < 0 && y > 0) {
+			direction = Math.abs(y) > Math.abs(x) ? 0 : 1;
+		}
+		if (x < 0 && y < 0) {
+			direction = Math.abs(y) > Math.abs(x) ? 2 : 1;
+		}
+		if (x > 0 && y < 0) {
+			direction = Math.abs(y) > Math.abs(x) ? 2 : 3;
+		}
+
+
+		player.getKnockedBack({
+			speed: 150,
+			direction: direction,
+			duration: 300
+		});
+
 		player.getHit(this);
 
 	}
