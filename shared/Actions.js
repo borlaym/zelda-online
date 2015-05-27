@@ -11,6 +11,7 @@ module.exports = keymirror({
 	"REMOVE_OBJECT": null,
 	"HEARTBEAT": null,
 	"ATTACK": null,
+	"SPECIAL": null,
 	"HIT": null,
 	"JOIN": null,
 	"LEADERBOARD_CHANGE": null,

@@ -288,11 +288,21 @@ socket.on(Actions.OBJECT_UPDATE, function(data) {
         //Update the number of current rupees
         UI.updateRupees(data.rupees);
 
+         //Update the number of current bombs
+        UI.updateBombs(data.bombs);
+
         //Update the number of heart containers
         UI.updateLife(data.health);
 
         //Update the held sword
         UI.updateSword(data.sword);
+
+        //Update the held item
+        UI.updateHeldItem(data.currentItem);
+    }
+
+    if (data.type === "BOMB") {
+        console.log(data);
     }
 
 });

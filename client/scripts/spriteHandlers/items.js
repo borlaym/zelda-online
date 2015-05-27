@@ -12,6 +12,7 @@ module.exports = {
 		[ObjectTypes.HEART_CONTAINER]: [244, 124, 7, 8],
 		[ObjectTypes.RUPEE]: [164, 120, 8, 16],
 		[ObjectTypes.MASTER_SWORD]: [364, 120, 7, 16],
+		[ObjectTypes.BOMB]: [204, 1, 8, 14],
 	},
 
 	load: function() {

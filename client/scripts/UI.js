@@ -1,5 +1,5 @@
 var $ = require("zepto-browserify").$;
-
+var ObjectTypes = require("../../shared/ObjectTypes.js");
 
 module.exports = {
 	drawMap: function(data) {
@@ -21,6 +21,9 @@ module.exports = {
 	},
 	updateRupees: function(amount) {
 		$(".rupees span").text(amount);
+	},
+	updateBombs: function(amount) {
+		$(".bombs span").text(amount);
 	},
 	updateLife: function(amount) {
 		$(".life .containers").html("");
@@ -47,5 +50,10 @@ module.exports = {
 			$(".equipment .A").html("<div class='sword'></div>");
 		}
 		this.swordType = type;
+	},
+	updateHeldItem: function(type) {
+		if (type === ObjectTypes.BOMB) {
+			$(".equipment .B").html("<div class='bomb-item'></div>");
+		}
 	}
 }

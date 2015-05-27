@@ -27,6 +27,7 @@ class GameObjectClientImplementation extends GameObject {
 				break;
 			case ObjectTypes.SWORD:
 			case ObjectTypes.MASTER_SWORD:
+			case ObjectTypes.BOMB:
 				this.spriteHandler = projectileHandler;
 				break;
 		}
@@ -183,8 +184,13 @@ class GameObjectClientImplementation extends GameObject {
 			return;
 		}
 		this.direction = direction;
-		this.currentSprite = this.spriteHandler.sprites[this.direction][this.currentFrame];
-		this.lastSpriteChange[this.direction] = 0;
+		if (this.type === ObjectTypes.PLAYER_LINK) {
+			this.currentSprite = this.spriteHandler.sprites[this.direction][this.currentFrame];
+			this.lastSpriteChange[this.direction] = 0;
+		} else {
+			this.currentSprite = this.spriteHandler.sprites[this.type][this.direction][0];
+			console.log(this.currentSprite);
+		}
 	}
 
 	setAttacking(isAttacking) {
@@ -209,9 +215,11 @@ class GameObjectClientImplementation extends GameObject {
 	}
 
 	swapSpriteFrame() {
-		this.currentFrame = 1 - this.currentFrame;
-		this.currentSprite = this.spriteHandler.sprites[this.direction][this.currentFrame];
-		this.lastSpriteChange[this.direction] = 0;
+		if (this.type === ObjectTypes.PLAYER_LINK) {
+			this.currentFrame = 1 - this.currentFrame;
+			this.currentSprite = this.spriteHandler.sprites[this.direction][this.currentFrame];
+			this.lastSpriteChange[this.direction] = 0;
+		}
 	}
 
 	showAttackingSprite() {

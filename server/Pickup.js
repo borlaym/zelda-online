@@ -5,10 +5,12 @@ class Pickup {
 	constructor(room) {
 		this.room = room;
 		var itemType = Math.random();
-		if (itemType < 0.6) {
+		if (itemType < 0.5) {
 			this.type = ObjectTypes.RUPEE;
-		} else if (itemType < 0.95) {
+		} else if (itemType < 0.75) {
 			this.type = ObjectTypes.HEART_CONTAINER;
+		} else if (itemType < 0.95) {
+			this.type = ObjectTypes.BOMB;
 		} else {
 			this.type = ObjectTypes.MASTER_SWORD;
 		}

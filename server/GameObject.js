@@ -89,7 +89,7 @@ class GameObjectServerImplementation extends GameObject {
 				}
 				player.projectiles.forEach(function(projectile) {
 					if (rectanglesOverlap(projectile.getWorldPosition(), myPosition)) {
-						self.getHit(projectile);
+						projectile.contact(self);
 					}
 				});
 			}
@@ -305,11 +305,7 @@ class GameObjectServerImplementation extends GameObject {
 			self.world.io.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
 		}, 500);
 		
-		this.getKnockedBack({
-			speed: 150,
-			direction: projectile.direction,
-			duration: 300
-		});
+		
 
 		self.world.io.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
 	}
