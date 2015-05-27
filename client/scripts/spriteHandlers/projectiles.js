@@ -34,6 +34,20 @@ module.exports = {
 			[ //LEFT,
 				[16, 19]
 			]
+		],
+		[ObjectTypes.BOMB]: [
+			[//UP,
+				[69, 0], 
+			],
+			[ //RIGHT
+				[90, 0]
+			],
+			[ //DOWN,
+				[67, 0],
+			],
+			[ //LEFT,
+				[67, 0]
+			]
 		]
 	},
 

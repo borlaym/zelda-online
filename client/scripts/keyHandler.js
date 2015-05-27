@@ -9,7 +9,8 @@ var keys = {
 	LEFT_ALT: 37,
 	RIGHT_ALT: 39,
 	DOWN_ALT: 40,
-	A: 79
+	A: 79,
+	B: 73
 }
 var pressedKeys = [];
 
@@ -35,6 +36,9 @@ var Object = {
 				break;
 			case keys.A:
 				this.socket.emit(Actions.ATTACK, 3);
+				break;
+			case keys.B:
+				this.socket.emit(Actions.SPECIAL, 3);
 				break;
 		}
 	},

@@ -49,11 +49,15 @@ class Player extends GameObject {
 		this.socket.on(Actions.START_MOVING, this.startMoving.bind(this));
 		this.socket.on(Actions.STOP_MOVING, this.stopMoving.bind(this));
 		this.socket.on(Actions.ATTACK, this.attack.bind(this));
+		this.socket.on(Actions.SPECIAL, this.special.bind(this));
 		this.lastHeartbeat = new Date().getTime();
 		this.socket.on(Actions.HEARTBEAT, this.heartbeat.bind(this));
 		this.projectiles = [];
 		this.swordType = 0.5;
 		this.rupees = 0;
+		this.bombs = 0;
+		this.currentItem = "";
+		this.canUseSpecial = true;
 	}
 	startMoving(data) {
 		if (!this.isMovingInvoluntarily && !this.isAttacking && this.state) {
@@ -83,12 +87,19 @@ class Player extends GameObject {
 				if (pickups[i].type === ObjectTypes.MASTER_SWORD) {
 					this.swordType = 1;
 				}
+				if (pickups[i].type === ObjectTypes.BOMB) {
+					this.bombs += 3;
+					if (this.bombs > 9) {
+						this.bombs = 9;
+					}
+					this.currentItem = ObjectTypes.BOMB;
+				}
 				pickups[i].destroy();
 			}
 		}
 		
 		
-
+		//Check room transition
 		if ((this.position[0] <= 16 && this.direction === LEFT) ||
 			(this.position[0] >= 246 && this.direction === RIGHT) ||
 			(this.position[1] <= 16 && this.direction === UP) ||
@@ -126,7 +137,11 @@ class Player extends GameObject {
 		this.socket.emit(Actions.HEARTBEAT);
 	}
 	attack() {
-		if (this.projectiles.length !== 0 || this.state === 0) {
+		var isAttackingWithSword = _.find(this.projectiles, function(projectile) {
+			return projectile.type === ObjectTypes.SWORD || projectile.type === ObjectTypes.MASTER_SWORD;
+		});
+
+		if (isAttackingWithSword || this.state === 0) {
 			return;
 		}
 		this.isAttacking = true;
@@ -143,6 +158,83 @@ class Player extends GameObject {
 			self.socket.to(self.room.id).emit(Actions.OBJECT_UPDATE, self.getState());
 			self.socket.emit(Actions.OBJECT_UPDATE, self.getState());
 		}, 200);
+	}
+
+	/**
+	 * Use a special item, like bombs or bow and arrow
+	 */
+	special() {
+		if (!this.canUseSpecial) {
+			return;
+		}
+		var self = this;
+		this.useItem();
+		
+	}
+
+	useItem() {
+		switch(this.currentItem) {
+			case ObjectTypes.BOMB:
+				this.spawnBomb();
+				break;
+		}
+	}
+
+	spawnBomb() {
+		if (this.bombs < 1) {
+			return;
+		}
+		var self = this;
+
+		var bombPosition = [this.position[0], this.position[1]];
+		switch(this.direction) {
+			case UP:
+				bombPosition[1] -= 32;
+				break;
+			case RIGHT: {
+				bombPosition[0] += 32;
+				break;
+			}
+			case DOWN:
+				bombPosition[1] += 32;
+				break;
+			case LEFT:
+				bombPosition[0] -=32;
+				break;
+		}
+
+		var bomb = new Projectile({
+			type: ObjectTypes.BOMB,
+			position: bombPosition,
+			direction: UP,
+			isMoving: false,
+			isAttached: false,
+			speed: 0,
+			duration: 1500,
+			owner: this,
+			id: this.id + "bomb",
+			damage: 0,
+			world: this.world
+		});
+
+		setTimeout(function() {
+			bomb.damage = 1;
+			bomb.direction = RIGHT;
+			self.socket.to(self.room.id).emit(Actions.OBJECT_UPDATE, bomb.getState());
+			self.socket.emit(Actions.OBJECT_UPDATE, bomb.getState());
+		}, 1000);
+
+		this.projectiles.push(bomb);
+		this.socket.to(this.room.id).emit(Actions.ADD_OBJECT, bomb.getState());
+		this.socket.emit(Actions.ADD_OBJECT, bomb.getState());
+
+		this.bombs--;
+		this.socket.emit(Actions.OBJECT_UPDATE, this.getState());
+
+		this.canUseSpecial = false;
+		setTimeout(function() {
+			self.canUseSpecial = true;
+		}, 2000);
 	}
 
 	spawnSword() {
@@ -185,13 +277,13 @@ class Player extends GameObject {
 
 	}
 
-	removeSword(swordInstance) {
+	removeProjectile(projectileInstance) {
 		this.projectiles = _.filter(function(item) {
-			return item !== swordInstance;
+			return item !== projectileInstance;
 		});
-		this.socket.to(this.room.id).emit(Actions.REMOVE_OBJECT, swordInstance.id);
-		this.socket.emit(Actions.REMOVE_OBJECT, swordInstance.id);
-		this.socket.emit(Actions.REMOVE_OBJECT, swordInstance.id);
+		this.socket.to(this.room.id).emit(Actions.REMOVE_OBJECT, projectileInstance.id);
+		this.socket.emit(Actions.REMOVE_OBJECT, projectileInstance.id);
+		this.socket.emit(Actions.REMOVE_OBJECT, projectileInstance.id);
 	}
 
 	spawn() {
@@ -224,24 +316,11 @@ class Player extends GameObject {
 		this.socket.broadcast.to(this.room.id).emit(Actions.ADD_OBJECT, this.getState());
 	}
 
-	getHit(projectile) {
-		//Check if we are facing the direction of the projectile
-		//If we do, we block the attack!
-		if (
-			(this.direction === UP && projectile.direction === DOWN) ||
-			(this.direction === DOWN && projectile.direction === UP) ||
-			(this.direction === LEFT && projectile.direction === RIGHT) ||
-			(this.direction === RIGHT && projectile.direction === LEFT)
-		) {
-			//The attacking player gets knocked back
-			projectile.owner.getKnockedBack({
-				speed: 150,
-				duration: 100,
-				direction: this.direction
-			})
-			return;
-		}
-		super.getHit(projectile);
+	getState() {
+		var state = super.getState();
+		state.currentItem = this.currentItem;
+		state.bombs = this.bombs;
+		return state;
 	}
 	die() {
 		this.swordType = 0.5;

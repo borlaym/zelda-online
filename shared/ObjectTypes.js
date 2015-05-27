@@ -4,6 +4,7 @@ module.exports = keymirror({
 	"PLAYER_LINK": null,
 	"SWORD": null,
 	"MASTER_SWORD": null,
+	"BOMB": null,
 	"TREE": null,
 	"FLOOR_DIRT": null,
 	"HILL": null,

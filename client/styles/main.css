@@ -140,6 +140,15 @@
 	left: 11px;
 }
 
+.bomb-item {
+	width: 16px;
+	height: 28px;
+	background: url(../images/bomb-item.png);
+	position: absolute;
+	top: 13px;
+	left: 8px;
+}
+
 .statusBar .life .containers {
 	text-align: left;
 }
