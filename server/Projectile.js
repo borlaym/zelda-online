@@ -70,7 +70,7 @@ class Projectile extends GameObject {
 			this.owner.getKnockedBack({
 				speed: 150,
 				duration: 100,
-				direction: this.direction
+				direction: player.direction
 			})
 			return;
 		}
